@@ -2,13 +2,13 @@
 name: design-preview
 description: >
   Show reference visuals so the user can see and choose. Use during
-  brainstorming and frontend design when a layout, mockup, style, or
-  comparison is clearer shown than described: present 2-3 mid-fidelity
-  options, not a finished UI. Also use for charts, maps, plots, simulators,
-  and adjustable exploration beyond regular text. Use when the user runs
-  /design-preview. Do not use when the user asks to build or change a project
-  website, app page, or component. Do not use for generated images, game
-  art, or Feishu/Lark app design.
+  brainstorming, html-prototype confirmation, and frontend design when a
+  layout, mockup, style, or comparison is clearer shown than described:
+  present 2-3 mid-fidelity options, not a finished UI. Also use for charts,
+  maps, plots, simulators, and adjustable exploration beyond regular text.
+  Use when the user runs /design-preview. Do not use when the user asks to
+  build or change a project website, app page, or component. Do not use for
+  generated images, game art, or Feishu/Lark app design.
 metadata:
   short-description: "Reference UI options, charts, and labs on a local port"
 ---
