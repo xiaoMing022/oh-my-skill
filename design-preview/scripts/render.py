@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import json
+import os
 import sys
 from html import escape
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -85,16 +87,29 @@ html>body{{padding:0}}</style>
 """
 
 
-def serve(document: str, port: int) -> None:
-    encoded_document = document.encode("utf-8")
+def _request_path(raw_path: str) -> str:
+    return raw_path.split("?", 1)[0]
 
+
+def serve(
+    fragment_path: Path,
+    title: str | None,
+    port: int,
+    info_path: Path | None = None,
+) -> None:
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:
-            if self.path not in ("/", "/index.html"):
+            if _request_path(self.path) not in ("/", "/index.html"):
                 self.send_error(404)
+                return
+            try:
+                encoded_document = render(fragment_path, title).encode("utf-8")
+            except OSError:
+                self.send_error(500)
                 return
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
             self.send_header("Content-Length", str(len(encoded_document)))
             self.end_headers()
             self.wfile.write(encoded_document)
@@ -103,7 +118,17 @@ def serve(document: str, port: int) -> None:
             pass
 
     server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
-    print(f"http://127.0.0.1:{server.server_port}/", flush=True)
+    url = f"http://127.0.0.1:{server.server_port}/"
+    payload = {
+        "url": url,
+        "port": server.server_port,
+        "pid": os.getpid(),
+        "fragment": str(fragment_path.resolve()),
+    }
+    print(url, flush=True)
+    if info_path is not None:
+        info_path.parent.mkdir(parents=True, exist_ok=True)
+        info_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -136,14 +161,23 @@ def main() -> None:
         default=0,
         help="local serve port; defaults to any free port",
     )
+    parser.add_argument(
+        "--info",
+        type=Path,
+        help="write serve url/port/pid JSON to this path",
+    )
     args = parser.parse_args()
     if args.serve and args.destination is not None:
         parser.error("destination cannot be used with --serve")
+    if args.info is not None and not args.serve:
+        parser.error("--info requires --serve")
+
+    if args.serve:
+        serve(args.fragment, args.title, args.port, args.info)
+        return
 
     document = render(args.fragment, args.title)
-    if args.serve:
-        serve(document, args.port)
-    elif args.destination is None:
+    if args.destination is None:
         sys.stdout.write(document)
     else:
         args.destination.parent.mkdir(parents=True, exist_ok=True)

@@ -1,49 +1,56 @@
 ---
-name: visualize
+name: design-preview
 description: >
-  Create interactive visualizations, simulators, charts, maps, plots,
-  comparisons, UI mockups, and explorable labs the user can see and adjust.
-  Use when asked to show how something works, make a simulator or lab, map,
-  plot, chart, graph, comparison, UI mockup, scenario, adjustable inputs, or
-  exploration beyond regular text. Use when the user runs /visualize.
-  Do not use when the user asks to build or change a project website, app
-  page, or component. Do not use for generated images, game art, or
-  Feishu/Lark app design.
+  Show reference visuals so the user can see and choose. Use during
+  brainstorming and frontend design when a layout, mockup, style, or
+  comparison is clearer shown than described: present 2-3 mid-fidelity
+  options, not a finished UI. Also use for charts, maps, plots, simulators,
+  and adjustable exploration beyond regular text. Use when the user runs
+  /design-preview. Do not use when the user asks to build or change a project
+  website, app page, or component. Do not use for generated images, game
+  art, or Feishu/Lark app design.
 metadata:
-  short-description: "Interactive charts, maps, mockups, and labs"
+  short-description: "Reference UI options, charts, and labs on a local port"
 ---
 
-# Visualize
+# Design Preview
 
+- Primary job: help the user **see and pick**. During brainstorming and
+  frontend design, show 2-3 reference directions (layout, chrome, hierarchy,
+  tone) so they can choose. Do not produce a complete, pixel-perfect, or
+  exhaustive interface unless they explicitly ask to refine a chosen option.
 - A request for a new standalone file, website, app page, component, or other
   project change is not a visualization request, even when the deliverable
-  contains charts or interactive content.
-- A request to preview, explain, or explore a proposed interface in the
-  conversation is a visualization request.
-- Create a visual only when the user needs to see or explore it and it
-  materially improves the explanation. Do not create one merely because the
-  request involves data, charts, or an interactive page.
+  contains charts or interactive content. That work belongs in the project.
+- A request to preview, compare, or explore a proposed interface is a
+  visualization request. Use this skill for visual brainstorming questions
+  (which layout, which density, which navigation) rather than describing the
+  UI only in text.
+- Create a visual only when seeing it materially improves the decision. Do
+  not create one merely because the request involves data, charts, or UI.
 - Use Mermaid when labeled nodes and edges fully explain a static structure;
-  return a normal fenced Mermaid block and no visualization file. Use HTML for
-  dynamics, spatial motion, adjustable inputs, and other visuals.
+  return a normal fenced Mermaid block and no preview server. Use HTML for
+  mockup options, dynamics, spatial motion, and adjustable inputs.
 - Work silently unless blocked or the user explicitly asks for progress. Never
   send commentary or progress updates while reading this skill or writing or
   updating the file; the final response must be your first user-facing message.
-- In user-facing prose, describe only what the visual helps the user see or
-  decide. Keep it concise and do not repeat information already clear from the
-  visual. Never announce this skill, widgets, fragments, CSP, scripts, or
-  implementation details.
+- In user-facing prose, describe only what to look at or choose. Keep it
+  concise. Share the preview URL. Never announce this skill, widgets,
+  fragments, CSP, scripts, local HTML files, or implementation details.
 
 ## Context compaction
 
 Copy into every compaction summary:
-`Reload the full visualize skill before creating or updating a visualization.`
+`Reload the full design-preview skill before creating or updating a preview.`
 
 ## Host
 
-Grok cannot embed HTML fragments in the conversation. Codex `visualize`
+Grok cannot embed HTML fragments in the conversation. Codex visualize
 content tags, `window.openai`, and `~/.codex` paths do not work here. Never
 write under `~/.codex`. Never modify Codex plugin, cache, or skill files.
+
+Preview is a **local HTTP port**, not a file the user opens. Do not `open`
+or link a filesystem `.html` path as the way to view the visual.
 
 Skill directory: the folder that contains this `SKILL.md`.
 Output directory: `~/.grok/visualizations/` (create it if missing). Never
@@ -55,15 +62,8 @@ write visualization files into the user's git working tree.
 
 - Choose a concise ASCII lowercase-hyphenated title.
 - Write the editable source as `~/.grok/visualizations/<title>.fragment.html`.
-- Render a standalone document with:
-
-  ```bash
-  python3 <skill-dir>/scripts/render.py \
-    ~/.grok/visualizations/<title>.fragment.html \
-    ~/.grok/visualizations/<title>.html
-  ```
-
-- Reuse the same title when updating an existing visual.
+- Reuse the same title when updating an existing visual so the same port
+  keeps serving it.
 - Build the visual for the conversation. Use the open project only when the
   user asks for a site, app page, component, or change to existing project
   files — and then do not follow this skill.
@@ -91,26 +91,37 @@ write visualization files into the user's git working tree.
 - Keep the fragment focused on the visualization. Do not include explanatory
   paragraphs, formulas, instructions, or narrative callouts. Include only
   necessary labels, legends, values, and accessible text alternatives.
-- Open the rendered HTML so the user can interact:
+- Serve on a local port. Never treat a saved `.html` file as the preview.
+
+  Info file: `~/.grok/visualizations/<title>.serve.json`
+
+  If that file exists and its `pid` is still alive, only rewrite the fragment
+  (the running server re-reads it on each request). Ask the user to refresh
+  the same URL.
+
+  Otherwise start the server in the background and keep it running across
+  turns:
 
   ```bash
-  open ~/.grok/visualizations/<title>.html
+  python3 <skill-dir>/scripts/render.py \
+    ~/.grok/visualizations/<title>.fragment.html \
+    --serve \
+    --info ~/.grok/visualizations/<title>.serve.json
   ```
 
-- Verify with Playwright when it is available: open the rendered file, check
-  layout at 736px and 360px (and 1,024px when several compact chart panels
-  must stay side by side), confirm the primary interaction works, then capture
-  a 736px screenshot. Fix overlap, clipping, blank canvases, missing labels,
-  and JS errors before responding. If Playwright is unavailable, still open
-  the HTML.
-- Widen only when several compact chart panels must remain side by side for
-  direct comparison and would be unreadable at the normal width. Never widen a
-  single plot, map, grid, diagram, timeline, or full-size mockup; stack them
-  vertically instead.
-- Final user-facing message, in this turn: a markdown image of the screenshot
-  when one exists, a markdown link to the rendered HTML, and at most one short
-  conclusion. Do not dump a Markdown table or repeat the visual's data. Do not
-  emit Codex visualization tags.
+  Read the printed URL (and the info JSON). Share that `http://127.0.0.1:<port>/`
+  URL. On first start only, open the URL (`open "$URL"`), not a file path.
+- Verify against the served URL when Playwright is available: 736px and 360px
+  (and 1,024px when several compact option panels must stay side by side).
+  Fix overlap, clipping, blank canvases, missing labels, and JS errors before
+  responding.
+- Widen only when several compact option or chart panels must remain side by
+  side for direct comparison. Never widen a single plot, map, grid, diagram,
+  timeline, or full-size mockup; stack them vertically instead.
+- Final user-facing message: the preview URL, what to compare or notice, and
+  a question so the user can choose. Do not dump a Markdown table or repeat
+  the visual's data. Do not emit Codex visualization tags. Do not hand the
+  user a file path.
 
 ### External resources
 
@@ -120,12 +131,19 @@ write visualization files into the user's git working tree.
 
 ## Exporting an existing visualization
 
-- Keep the fragment as the editable source. When the user explicitly asks to
-  save, export, or publish a visualization already shown, copy or re-render
-  the standalone HTML to their chosen destination with `scripts/render.py`.
-- Apply this export flow only when the user explicitly asks to turn the
-  existing visualization into a website. For a general website request, build
-  a new responsive site in the open project without this skill's guidance.
+- Keep the fragment as the editable source. The live preview is the port, not
+  an exported file. When the user explicitly asks to save or export what is
+  already shown, then render a standalone document:
+
+  ```bash
+  python3 <skill-dir>/scripts/render.py \
+    ~/.grok/visualizations/<title>.fragment.html \
+    <destination>.html
+  ```
+
+- Apply this export flow only when they ask to turn the existing preview into
+  a file or website. For a general website request, build a new responsive
+  site in the open project without this skill's guidance.
 
 ## Composition
 
@@ -142,29 +160,45 @@ Choose the smallest composition that fits.
   targets. Never invent qualitative scores, status cards, or secondary fact
   grids to fill space.
 
-### UI mockups
+### UI mockups and design options
 
-- The visualization is the in-conversation preview, not a widget inside the
-  depicted product.
+Use this when the user is choosing a direction, especially during brainstorming
+or frontend design.
+
+- Show **2-3 alternatives** on one screen. Label them A/B/C (or short names).
+  Recommend one in the surrounding message. Ask them to pick. Never present a
+  single polished screen as if the design were already decided.
+- Stay at **reference fidelity**: layout, hierarchy, key regions, representative
+  copy, and a hint of tone. Grey or labeled blocks are enough for secondary
+  areas. Do not design every control, empty state, icon, or dashboard widget.
+  Do not invent a complete design system. Raise fidelity only after they pick
+  an option and ask to refine it.
+- 2-4 options max. One question per screen (layout *or* density *or* navigation,
+  not all at once). Put the question on the screen as a short heading.
+- Make each option selectable (`button` or a clickable surface with
+  `data-choice` and `aria-pressed`). Selection is local visual feedback only;
+  the user confirms in chat.
+- The visualization is the preview, not a widget inside the depicted product.
 - Use product and platform context already available in the conversation;
   don't search the project to render a mockup. Match the product's chrome,
-  navigation, typography, colors, and content. If its design is unavailable,
-  infer one from the platform and request.
+  navigation, typography, colors, and content only as far as the question
+  needs. If its design is unavailable, infer a light sketch from the platform.
 - NEVER use visualization CSS variables or utility classes inside a mockup
-  (for example, `--card`, `--font-size-base`, `.card`, or `.btn`). Define
-  root-scoped, product-specific colors, typography, surfaces, and controls
-  instead. This rule overrides all general visualization guidance.
+  (for example, `--card`, `--font-size-base`, `.card`, or `.btn`). Option
+  frames around the mockups may use those utilities; the depicted product may
+  not. Define root-scoped, product-specific colors and type inside the mockup.
+  This rule overrides all general visualization guidance.
 - Keep only the surrounding surface transparent. Give product windows, cards,
   menus, and popovers opaque backgrounds, and stack overlays above the product
   content.
 - Follow the host's active appearance with product-specific
   `light-dark(<light>, <dark>)` colors unless a fixed theme is requested.
 - **Contained mockup:** Frame a component, dialog, small feature, or mobile
-  screen as a compact product surface.
-- **Full-page mockup:** Render a desktop window, application shell, or page at
-  full width without an additional visualization card.
+  screen as a compact product surface inside an option.
+- **Full-page mockup:** Use only after the user has chosen a direction, or when
+  comparing 2 page-level layouts; still keep them sketchy, not production UI.
 - Put app-wide navigation and pickers in the app chrome, and local controls in
-  their component. Omit single-option pickers. Show realistic states, not
+  their component. Omit single-option pickers. Show realistic structure, not
   invented dashboards, filler cards, or oversized icons.
 
 ### Interactive explainer or simulation
@@ -254,8 +288,9 @@ Choose the smallest composition that fits.
   neighborhood, street, or comparable geometry; a blank field or lone
   administrative outline is not a basemap. Show the full city or region behind
   points or partial choropleths, and frame the locations with modest padding.
-- Include the verified geometry in the final HTML. Open it before replying and
-  fix blank basemaps, failed imports, missing labels, or unprojected points.
+- Include the verified geometry in the fragment. Check the served preview
+  before replying and fix blank basemaps, failed imports, missing labels, or
+  unprojected points.
 
 ### Dense categorical grid
 

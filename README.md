@@ -6,7 +6,7 @@ Personal agent skills. Each subdirectory is one skill with a `SKILL.md`.
 
 | Skill | What it does |
 | --- | --- |
-| [visualize](visualize/) | Interactive charts, maps, mockups, simulators, and labs |
+| [design-preview](design-preview/) | Reference UI options, charts, and labs served on a local port |
 
 ## Layout
 
