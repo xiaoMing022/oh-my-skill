@@ -20,11 +20,11 @@ The unscoped name `oh-my-skills` is already taken on npm. Use the scoped package
 ### npm / npx
 
 ```bash
-# List skills and which agents would receive them
-npx @lxy10086/oh-my-skills list
+# Interactive install: pick skills and agents in the terminal
+npx @lxy10086/oh-my-skills add
 
-# Install both skills into detected agents
-npx @lxy10086/oh-my-skills add --all
+# Skip prompts; install every skill into detected agents
+npx @lxy10086/oh-my-skills add --all -y
 
 # One skill, selected agents
 npx @lxy10086/oh-my-skills add design-preview --agent grok,claude,cursor
@@ -32,6 +32,8 @@ npx @lxy10086/oh-my-skills add design-preview --agent grok,claude,cursor
 # Copy into the current project (committed with the repo)
 npx @lxy10086/oh-my-skills add html-prototype --project
 ```
+
+In a real terminal, `add` without `--agent` prints a pixel banner, then a checkbox list. Detected agents are pre-checked. Space toggles, arrow keys move, `a` selects all, Enter confirms. Pass `-y` or `--agent` to skip the picker (CI / scripts).
 
 ### Agent Skills CLI
 
@@ -60,7 +62,8 @@ cd oh-my-skill
 ```bash
 npx @lxy10086/oh-my-skills list
 npx @lxy10086/oh-my-skills agents
-npx @lxy10086/oh-my-skills add <name...> [--all] [--agent <ids>] [--project]
+npx @lxy10086/oh-my-skills add              # interactive picker
+npx @lxy10086/oh-my-skills add <name...> [--all] [--agent <ids>] [--project] [-y]
 npx @lxy10086/oh-my-skills remove <name...> [--all] [--agent <ids>]
 npx @lxy10086/oh-my-skills update
 npx @lxy10086/oh-my-skills info design-preview
@@ -76,6 +79,7 @@ npx @lxy10086/oh-my-skills doctor
 | `--link` | Symlink to this package directory (development) |
 | `--force` | Replace existing files |
 | `--dry-run` | Print actions without writing |
+| `-y, --yes` | Skip prompts; install to detected agents |
 
 Global installs copy skills into `~/.local/share/oh-my-skills`, then symlink from there. That survives `npx` cache cleanup. `--project` copies into the repo so teammates do not need the store.
 
@@ -90,7 +94,7 @@ npx @lxy10086/oh-my-skills remove --all --agent cursor
 
 ## Agent paths
 
-Default `add` / `remove` targets **detected** agents plus `~/.agents/skills`. Use `--agent all` to create every known path.
+Interactive `add` lets you tick agents; detected ones start checked. `remove` and `-y` still default to detected agents plus `~/.agents/skills`. Use `--agent all` to create every known path.
 
 | Agent | Global | Project |
 | --- | --- | --- |

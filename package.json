@@ -1,6 +1,6 @@
 {
   "name": "@lxy10086/oh-my-skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cross-agent design-preview and html-prototype skills with an installer CLI",
   "type": "module",
   "main": "bin/lib.js",

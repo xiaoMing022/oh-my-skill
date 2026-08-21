@@ -3,22 +3,17 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { c } from './style.js';
+import { printBanner } from './banner.js';
+import { shouldPrompt, promptMultiSelect, buildSkillChoices } from './prompt.js';
+
+export { c };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const PKG_ROOT = path.resolve(__dirname, '..');
 export const PLUGIN_DIRNAME = 'oh-my-skills';
-
-export const c = {
-  reset: '\x1b[0m',
-  bold: '\x1b[1m',
-  dim: '\x1b[2m',
-  green: '\x1b[32m',
-  cyan: '\x1b[36m',
-  yellow: '\x1b[33m',
-  red: '\x1b[31m',
-};
 
 export const AGENTS = {
   agents: {
@@ -257,11 +252,30 @@ export function storeDir(home) {
   return path.join(home, '.local', 'share', 'oh-my-skills');
 }
 
+export function buildAgentChoices(ctx, flags) {
+  const choices = [];
+  for (const agent of Object.values(AGENTS)) {
+    const targetPath = flags.project ? agent.project?.(ctx.cwd) : agent.global(ctx.home);
+    if (!targetPath) continue;
+    const detected = Boolean(agent.always || agent.detect(ctx.home));
+    choices.push({
+      id: agent.id,
+      label: `${agent.name}  ${c.dim}(${agent.id})${c.reset}`,
+      hint: detected ? `${c.green}detected${c.reset}  ${targetPath}` : `${c.dim}not found${c.reset}  ${targetPath}`,
+      selected: detected,
+    });
+  }
+  return choices;
+}
+
 export function createContext({
   home = os.homedir(),
   cwd = process.cwd(),
   pkgRoot = PKG_ROOT,
   log = console.log,
+  stdin = process.stdin,
+  stdout = process.stdout,
+  isTTY = Boolean(process.stdin.isTTY && process.stdout.isTTY),
 } = {}) {
   return {
     home,
@@ -270,6 +284,9 @@ export function createContext({
     skillsDir: path.join(pkgRoot, 'skills'),
     store: storeDir(home),
     log,
+    stdin,
+    stdout,
+    isTTY,
     pkg: readJson(path.join(pkgRoot, 'package.json')),
   };
 }
@@ -456,23 +473,61 @@ export function cmdAgents(ctx, flags) {
   return 0;
 }
 
-export function cmdAdd(ctx, names, flags) {
-  const toInstall = resolveSkillNames(ctx, names, flags);
+export async function cmdAdd(ctx, names, flags) {
+  printBanner(ctx);
+
+  let skillNames = names;
+  if (shouldPrompt(ctx, flags) && !flags.all && skillNames.length === 0) {
+    try {
+      skillNames = await promptMultiSelect(ctx, {
+        title: 'Which skills do you want to install?',
+        items: buildSkillChoices(listAvailableSkills(ctx)),
+      });
+    } catch (err) {
+      if (err.code === 'CANCELED') return 1;
+      throw err;
+    }
+    if (skillNames.length === 0) {
+      ctx.log(`\n${c.yellow}No skills selected.${c.reset}\n`);
+      return 1;
+    }
+  }
+
+  const toInstall = resolveSkillNames(ctx, skillNames, flags);
   if (toInstall.length === 0) {
     ctx.log(`\n${c.yellow}No valid skills specified to add.${c.reset}`);
-    ctx.log(`Run ${c.cyan}oh-my-skills list${c.reset} to see available skills.\n`);
+    ctx.log(`Run ${c.cyan}oh-my-skills add${c.reset} in a terminal to pick interactively, or pass --all.\n`);
     return 1;
   }
 
-  const targets = resolveTargets({ flags, home: ctx.home, cwd: ctx.cwd });
+  let agentFlags = flags;
+  if (shouldPrompt(ctx, flags) && flags.agents.length === 0) {
+    try {
+      const picked = await promptMultiSelect(ctx, {
+        title: 'Install into which agents?',
+        items: buildAgentChoices(ctx, flags),
+      });
+      if (picked.length === 0) {
+        ctx.log(`\n${c.yellow}No agents selected.${c.reset}\n`);
+        return 1;
+      }
+      agentFlags = { ...flags, agents: picked };
+    } catch (err) {
+      if (err.code === 'CANCELED') return 1;
+      throw err;
+    }
+  }
+
+  const targets = resolveTargets({ flags: agentFlags, home: ctx.home, cwd: ctx.cwd });
   if (targets.length === 0) {
     ctx.log(`\n${c.yellow}No matching agent directories.${c.reset} Try --agent all\n`);
     return 1;
   }
 
-  cleanupLegacyClaudePlugin(ctx, flags);
+  cleanupLegacyClaudePlugin(ctx, agentFlags);
 
-  ctx.log(`\n${c.bold}Installing: ${toInstall.map((s) => c.cyan + s + c.reset).join(', ')}${c.reset}\n`);
+  ctx.log(`\n${c.bold}Installing: ${toInstall.map((s) => c.cyan + s + c.reset).join(', ')}${c.reset}`);
+  ctx.log(`${c.dim}→ ${targets.map((t) => t.id).join(', ')}${c.reset}\n`);
 
   const copyToAgent = flags.project || flags.copy;
   const meta = readStoreMeta(ctx);
@@ -581,7 +636,7 @@ export function cmdUpdate(ctx, names, flags) {
     return 1;
   }
   ctx.log(`\n${c.bold}Updating ${toUpdate.join(', ')} from ${ctx.pkg.name}@${ctx.pkg.version}${c.reset}\n`);
-  return cmdAdd(ctx, toUpdate, { ...flags, all: false, force: true });
+  return cmdAdd(ctx, toUpdate, { ...flags, all: false, force: true, yes: true });
 }
 
 export function cmdInfo(ctx, skillName) {
@@ -653,7 +708,7 @@ ${c.bold}USAGE${c.reset}
 
 ${c.bold}COMMANDS${c.reset}
   ${c.cyan}list, ls${c.reset}               List skills and install status
-  ${c.cyan}add, install <name...>${c.reset} Install skill(s) into agent directories
+  ${c.cyan}add, install <name...>${c.reset} Install skill(s); prompts for agents in a terminal
   ${c.cyan}remove, rm <name...>${c.reset}   Uninstall skill(s)
   ${c.cyan}update [name...]${c.reset}       Refresh installed skills from this package
   ${c.cyan}info <name>${c.reset}            Print a skill's SKILL.md
@@ -669,10 +724,11 @@ ${c.bold}OPTIONS${c.reset}
   ${c.yellow}--link${c.reset}                Link directly to this package (local development)
   ${c.yellow}--force, -f${c.reset}           Replace existing files
   ${c.yellow}--dry-run${c.reset}             Print actions without writing
-  ${c.yellow}-y, --yes${c.reset}             Accepted for non-interactive use (no prompts)
+  ${c.yellow}-y, --yes${c.reset}             Skip prompts; install to detected agents
 
 ${c.bold}EXAMPLES${c.reset}
-  $ npx @lxy10086/oh-my-skills add --all
+  $ npx @lxy10086/oh-my-skills add
+  $ npx @lxy10086/oh-my-skills add --all -y
   $ npx @lxy10086/oh-my-skills add design-preview --agent grok,claude
   $ npx @lxy10086/oh-my-skills add html-prototype --project
   $ npx @lxy10086/oh-my-skills remove design-preview --agent cursor

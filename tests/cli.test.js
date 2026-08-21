@@ -15,7 +15,10 @@ import {
   run,
   isManagedPath,
   storeDir,
+  buildAgentChoices,
 } from '../bin/lib.js';
+import { renderBanner } from '../bin/banner.js';
+import { shouldPrompt } from '../bin/prompt.js';
 
 const CLI = path.join(PKG_ROOT, 'bin', 'cli.js');
 
@@ -168,3 +171,42 @@ test('CLI help and list exit 0', () => {
   assert.match(list.stdout, /design-preview/);
   assert.match(list.stdout, /html-prototype/);
 });
+
+test('renderBanner is a large pixel wordmark', () => {
+  const banner = renderBanner({ columns: 80, version: '0.1.1' });
+  assert.match(banner, /PIXEL SKILLS FOR EVERY AGENT/);
+  assert.match(banner, /█/);
+  assert.ok(banner.split('\n').length >= 16);
+});
+
+test('shouldPrompt only in an interactive TTY without -y', () => {
+  assert.equal(shouldPrompt({ isTTY: true }, { yes: false, dryRun: false }), true);
+  assert.equal(shouldPrompt({ isTTY: false }, { yes: false, dryRun: false }), false);
+  assert.equal(shouldPrompt({ isTTY: true }, { yes: true, dryRun: false }), false);
+  assert.equal(shouldPrompt({ isTTY: true }, { yes: false, dryRun: true }), false);
+});
+
+test('buildAgentChoices pre-selects detected agents', () => {
+  const home = tmpHome();
+  fs.mkdirSync(path.join(home, '.grok'));
+  const ctx = createContext({ home, cwd: home, isTTY: false });
+  const choices = buildAgentChoices(ctx, { project: false });
+  const grok = choices.find((item) => item.id === 'grok');
+  const cursor = choices.find((item) => item.id === 'cursor');
+  assert.equal(grok.selected, true);
+  assert.equal(cursor.selected, false);
+  fs.rmSync(home, { recursive: true, force: true });
+});
+
+test('add --all -y prints the pixel banner and skips the picker', () => {
+  const home = tmpHome();
+  const result = spawnSync(process.execPath, [CLI, 'add', '--all', '-y', '--agent', 'agents', '--dry-run'], {
+    encoding: 'utf8',
+    env: { ...process.env, HOME: home },
+  });
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /PIXEL SKILLS FOR EVERY AGENT/);
+  assert.match(result.stdout, /design-preview/);
+  fs.rmSync(home, { recursive: true, force: true });
+});
+
