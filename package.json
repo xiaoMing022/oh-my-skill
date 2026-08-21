@@ -1,0 +1,53 @@
+{
+  "name": "@lxy10086/oh-my-skills",
+  "version": "0.1.0",
+  "description": "Cross-agent design-preview and html-prototype skills with an installer CLI",
+  "type": "module",
+  "main": "bin/lib.js",
+  "bin": {
+    "oh-my-skills": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "skills",
+    "plugin.json",
+    ".claude-plugin",
+    ".grok-plugin",
+    "README.md",
+    "LICENSE",
+    "install.sh"
+  ],
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "oh-my-skills": "node bin/cli.js"
+  },
+  "keywords": [
+    "ai-agents",
+    "skills",
+    "agent-skills",
+    "antigravity",
+    "claude-code",
+    "gemini-cli",
+    "cursor",
+    "codex",
+    "grok",
+    "design-preview",
+    "html-prototype"
+  ],
+  "author": "xiaoMing022",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaoMing022/oh-my-skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xiaoMing022/oh-my-skill/issues"
+  },
+  "homepage": "https://github.com/xiaoMing022/oh-my-skill#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

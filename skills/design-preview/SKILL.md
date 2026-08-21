@@ -43,25 +43,19 @@ metadata:
 Copy into every compaction summary:
 `Reload the full design-preview skill before creating or updating a preview.`
 
-## Host
+## Host and Environment
 
-Grok cannot embed HTML fragments in the conversation. Codex visualize
-content tags, `window.openai`, and `~/.codex` paths do not work here. Never
-write under `~/.codex`. Never modify Codex plugin, cache, or skill files.
-
-Preview is a **local HTTP port**, not a file the user opens. Do not `open`
-or link a filesystem `.html` path as the way to view the visual.
+Preview is served on a **local HTTP port** so the user can interactively view and test it. Do not link or ask the user to open a raw filesystem `.html` path as the primary visual.
 
 Skill directory: the folder that contains this `SKILL.md`.
-Output directory: `~/.grok/visualizations/` (create it if missing). Never
-write visualization files into the user's git working tree.
+Output directory: `~/.agent-skills/visualizations/` (create it if missing, or use `${AGENT_VISUALIZATIONS_DIR:-~/.agent-skills/visualizations}`). Never write scratch visualization files into the user's git working tree unless explicitly asked.
 
 ## HTML output contract
 
 ### File
 
 - Choose a concise ASCII lowercase-hyphenated title.
-- Write the editable source as `~/.grok/visualizations/<title>.fragment.html`.
+- Write the editable source as `~/.agent-skills/visualizations/<title>.fragment.html`.
 - Reuse the same title when updating an existing visual so the same port
   keeps serving it.
 - Build the visual for the conversation. Use the open project only when the
@@ -93,7 +87,7 @@ write visualization files into the user's git working tree.
   necessary labels, legends, values, and accessible text alternatives.
 - Serve on a local port. Never treat a saved `.html` file as the preview.
 
-  Info file: `~/.grok/visualizations/<title>.serve.json`
+  Info file: `~/.agent-skills/visualizations/<title>.serve.json`
 
   If that file exists and its `pid` is still alive, only rewrite the fragment
   (the running server re-reads it on each request). Ask the user to refresh
@@ -104,9 +98,9 @@ write visualization files into the user's git working tree.
 
   ```bash
   python3 <skill-dir>/scripts/render.py \
-    ~/.grok/visualizations/<title>.fragment.html \
+    ~/.agent-skills/visualizations/<title>.fragment.html \
     --serve \
-    --info ~/.grok/visualizations/<title>.serve.json
+    --info ~/.agent-skills/visualizations/<title>.serve.json
   ```
 
   Read the printed URL (and the info JSON). Share that `http://127.0.0.1:<port>/`
@@ -120,8 +114,7 @@ write visualization files into the user's git working tree.
   timeline, or full-size mockup; stack them vertically instead.
 - Final user-facing message: the preview URL, what to compare or notice, and
   a question so the user can choose. Do not dump a Markdown table or repeat
-  the visual's data. Do not emit Codex visualization tags. Do not hand the
-  user a file path.
+  the visual's data. Do not hand the user a raw file path.
 
 ### External resources
 
@@ -137,7 +130,7 @@ write visualization files into the user's git working tree.
 
   ```bash
   python3 <skill-dir>/scripts/render.py \
-    ~/.grok/visualizations/<title>.fragment.html \
+    ~/.agent-skills/visualizations/<title>.fragment.html \
     <destination>.html
   ```
 

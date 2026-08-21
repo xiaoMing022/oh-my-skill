@@ -123,7 +123,7 @@ Base links are data sources, not the prototype shell.
 
 ## Prototype contract
 
-- Output directory: `~/.grok/prototypes/<slug>/` (create if missing).
+- Output directory: `~/.agent-skills/prototypes/<slug>/` (create if missing).
   `<slug>` is ASCII, lowercase, hyphenated, stable across updates.
 - Default to **one** `index.html` plus optional `proto.css` / `proto.js`
   in that folder. Split files only when one document would be unreadable.
@@ -147,10 +147,10 @@ Base links are data sources, not the prototype shell.
 
 The working copy is always real files on disk:
 
-`~/.grok/prototypes/<slug>/` (create if missing)
+`~/.agent-skills/prototypes/<slug>/` (create if missing)
 
 Preview that folder on a **local HTTP port**. Info file:
-`~/.grok/prototypes/<slug>.serve.json`
+`~/.agent-skills/prototypes/<slug>.serve.json`
 
 If that file exists and its `pid` is still alive, only rewrite the HTML
 (the server re-reads files on each request). Ask the user to refresh.
@@ -159,8 +159,8 @@ Otherwise start the server in the background:
 
 ```bash
 python3 <skill-dir>/scripts/serve.py \
-  --root ~/.grok/prototypes/<slug> \
-  --info ~/.grok/prototypes/<slug>.serve.json
+  --root ~/.agent-skills/prototypes/<slug> \
+  --info ~/.agent-skills/prototypes/<slug>.serve.json
 ```
 
 Share `http://127.0.0.1:<port>/`. On first start only, `open "$URL"` —
@@ -170,7 +170,7 @@ open the URL, not a file path.
 
 HTML on disk is a first-class output, not an afterthought.
 
-- Always keep the working copy under `~/.grok/prototypes/<slug>/`.
+- Always keep the working copy under `~/.agent-skills/prototypes/<slug>/`.
 - When the user names a destination (Desktop, a folder, the current
   repo, `~/...`), copy the prototype folder there after a successful
   build. Create parents if needed. Overwrite the previous copy of the
@@ -187,7 +187,7 @@ HTML on disk is a first-class output, not an afterthought.
 
 ```bash
 mkdir -p "<dest>/<slug>"
-cp -R ~/.grok/prototypes/<slug>/. "<dest>/<slug>/"
+cp -R ~/.agent-skills/prototypes/<slug>/. "<dest>/<slug>/"
 ```
 
 ## Style

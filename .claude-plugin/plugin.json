@@ -1,0 +1,11 @@
+{
+  "name": "oh-my-skills",
+  "description": "Cross-agent interactive design preview and clickable HTML prototyping skills",
+  "version": "0.1.0",
+  "author": {
+    "name": "xiaoMing022"
+  },
+  "homepage": "https://github.com/xiaoMing022/oh-my-skill",
+  "repository": "https://github.com/xiaoMing022/oh-my-skill",
+  "license": "MIT"
+}

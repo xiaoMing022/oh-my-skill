@@ -1,0 +1,17 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "oh-my-skills",
+  "version": "0.1.0",
+  "description": "Cross-agent interactive design preview and clickable HTML prototyping skills",
+  "author": {
+    "name": "xiaoMing022"
+  },
+  "homepage": "https://github.com/xiaoMing022/oh-my-skill",
+  "repository": "https://github.com/xiaoMing022/oh-my-skill",
+  "license": "MIT",
+  "keywords": [
+    "design-preview",
+    "html-prototype",
+    "skills"
+  ]
+}

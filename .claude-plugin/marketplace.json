@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "oh-my-skills",
+  "description": "Design preview and HTML prototyping skills",
+  "owner": {
+    "name": "xiaoMing022"
+  },
+  "plugins": [
+    {
+      "name": "oh-my-skills",
+      "description": "Interactive design preview and clickable HTML prototyping",
+      "source": ".",
+      "category": "productivity"
+    }
+  ]
+}
