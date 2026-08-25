@@ -8,7 +8,7 @@ description: >
   to prototype from a Feishu/Lark doc, wiki, screenshot, image, or
   webpage. Use when the user runs /html-prototype. Do not use for
   standalone 2-3 sketch options with no prototype to build
-  (design-preview), for building a project website/app (frontend-design),
+  (visual-brainstorm), for building a project website/app (frontend-design),
   for Feishu 妙搭 apps (lark-apps), or for generated images and game art.
 metadata:
   short-description: "HTML prototype from docs; confirm visually; save files"
@@ -19,10 +19,10 @@ metadata:
 Build a **clickable product prototype** in standalone HTML from whatever
 the user already has: a Feishu/Lark doc, pasted requirements, screenshots,
 or a webpage. Write real HTML files. Confirm forks the source does not
-settle — visually with `design-preview`, otherwise in chat — before
+settle — visually with `visual-brainstorm`, otherwise in chat — before
 building the full prototype.
 
-This is not `design-preview` alone (that skill only shows sketch options).
+This is not `visual-brainstorm` alone (that skill only shows sketch options).
 This is not `frontend-design` (distinctive UI inside the user's project).
 Do not write into a git working tree unless the user asked to 落盘 there.
 
@@ -69,17 +69,17 @@ options over an open prompt.
 **Text in chat** when the answer is words: audience, v1 scope, entities,
 which flows ship first, C 端 vs 内部工具 when both fit.
 
-**`design-preview` when seeing is better than reading:** layout, nav
+**`visual-brainstorm` when seeing is better than reading:** layout, nav
 (sidebar / top / bottom), density, visual tone, page composition. Read
-the `design-preview` skill and follow it for that turn: 2-3 mid-fidelity
+the `visual-brainstorm` skill and follow it for that turn: 2-3 mid-fidelity
 options, one question on the screen, local port, user picks in chat.
 Then return here and keep going. Do not treat the sketch as the
 prototype.
 
-If `design-preview` is unavailable, show the same 2-3 options as a short
+If `visual-brainstorm` is unavailable, show the same 2-3 options as a short
 text choice and continue.
 
-Do not batch visual and text questions. Do not open `design-preview` for
+Do not batch visual and text questions. Do not open `visual-brainstorm` for
 scope or requirements questions. After each answer, drop settled forks
 and only ask what is still open. When none remain, build.
 

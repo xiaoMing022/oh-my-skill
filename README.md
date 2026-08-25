@@ -1,12 +1,12 @@
 # oh-my-skills
 
-Cross-agent skills for **interactive design previews** and **clickable HTML prototypes**.
+Cross-agent skills for **visual brainstorming** and **clickable HTML prototypes**.
 
 Works with Grok, Claude Code, Cursor, Codex, Gemini / Antigravity, OpenCode, Copilot, Roo, Windsurf, and any agent that reads Agent Skills (`SKILL.md`).
 
 | Skill | What it does |
 | --- | --- |
-| [design-preview](skills/design-preview/) | 2–3 mid-fidelity visual options, charts, maps, and labs on a local port |
+| [visual-brainstorm](skills/visual-brainstorm/) | See-and-pick UI direction: 2–3 mid-fidelity options on a local port; also charts, maps, and labs |
 | [html-prototype](skills/html-prototype/) | PRD / Feishu doc / screenshot → clickable HTML prototype, preview, optional export |
 
 Requires **Node.js 18+** to install. Preview servers need **python3**.
@@ -27,7 +27,7 @@ npx @lxy10086/oh-my-skills add
 npx @lxy10086/oh-my-skills add --all -y
 
 # One skill, selected agents
-npx @lxy10086/oh-my-skills add design-preview --agent grok,claude,cursor
+npx @lxy10086/oh-my-skills add visual-brainstorm --agent grok,claude,cursor
 
 # Copy into the current project (committed with the repo)
 npx @lxy10086/oh-my-skills add html-prototype --project
@@ -40,7 +40,7 @@ In a real terminal, `add` without `--agent` prints a pixel banner, then a checkb
 The repo layout is `skills/<name>/SKILL.md`, so the ecosystem installer works too:
 
 ```bash
-npx skills add xiaoMing022/oh-my-skill --skill design-preview -g
+npx skills add xiaoMing022/oh-my-skill --skill visual-brainstorm -g
 npx skills add xiaoMing022/oh-my-skill --all -g
 ```
 
@@ -66,7 +66,7 @@ npx @lxy10086/oh-my-skills add              # interactive picker
 npx @lxy10086/oh-my-skills add <name...> [--all] [--agent <ids>] [--project] [-y]
 npx @lxy10086/oh-my-skills remove <name...> [--all] [--agent <ids>]
 npx @lxy10086/oh-my-skills update
-npx @lxy10086/oh-my-skills info design-preview
+npx @lxy10086/oh-my-skills info visual-brainstorm
 npx @lxy10086/oh-my-skills doctor
 ```
 
@@ -86,7 +86,7 @@ Global installs copy skills into `~/.local/share/oh-my-skills`, then symlink fro
 ### Uninstall
 
 ```bash
-npx @lxy10086/oh-my-skills remove design-preview
+npx @lxy10086/oh-my-skills remove visual-brainstorm
 npx @lxy10086/oh-my-skills remove --all --agent cursor
 ```
 
@@ -129,6 +129,6 @@ oh-my-skills/
 ├── .grok-plugin/               # Grok marketplace
 ├── bin/cli.js                  # npx @lxy10086/oh-my-skills
 └── skills/
-    ├── design-preview/
+    ├── visual-brainstorm/
     └── html-prototype/
 ```

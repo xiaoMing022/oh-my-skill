@@ -1,53 +1,15 @@
----
-name: design-preview
-description: >
-  Show reference visuals so the user can see and choose. Use during
-  brainstorming, html-prototype confirmation, and frontend design when a
-  layout, mockup, style, or comparison is clearer shown than described:
-  present 2-3 mid-fidelity options, not a finished UI. Also use for charts,
-  maps, plots, simulators, and adjustable exploration beyond regular text.
-  Use when the user runs /design-preview. Do not use when the user asks to
-  build or change a project website, app page, or component. Do not use for
-  generated images, game art, or Feishu/Lark app design.
-metadata:
-  short-description: "Reference UI options, charts, and labs on a local port"
----
+# Render kit
 
-# Design Preview
+How to write and serve a preview. Read this before creating or updating a
+visual. Session flow, what to ask in text, and when to stop live in
+`SKILL.md` — do not restate them here.
 
-- Primary job: help the user **see and pick**. During brainstorming and
-  frontend design, show 2-3 reference directions (layout, chrome, hierarchy,
-  tone) so they can choose. Do not produce a complete, pixel-perfect, or
-  exhaustive interface unless they explicitly ask to refine a chosen option.
-- A request for a new standalone file, website, app page, component, or other
-  project change is not a visualization request, even when the deliverable
-  contains charts or interactive content. That work belongs in the project.
-- A request to preview, compare, or explore a proposed interface is a
-  visualization request. Use this skill for visual brainstorming questions
-  (which layout, which density, which navigation) rather than describing the
-  UI only in text.
-- Create a visual only when seeing it materially improves the decision. Do
-  not create one merely because the request involves data, charts, or UI.
-- Use Mermaid when labeled nodes and edges fully explain a static structure;
-  return a normal fenced Mermaid block and no preview server. Use HTML for
-  mockup options, dynamics, spatial motion, and adjustable inputs.
-- Work silently unless blocked or the user explicitly asks for progress. Never
-  send commentary or progress updates while reading this skill or writing or
-  updating the file; the final response must be your first user-facing message.
-- In user-facing prose, describe only what to look at or choose. Keep it
-  concise. Share the preview URL. Never announce this skill, widgets,
-  fragments, CSP, scripts, local HTML files, or implementation details.
-
-## Context compaction
-
-Copy into every compaction summary:
-`Reload the full design-preview skill before creating or updating a preview.`
+Skill directory: the folder that contains `SKILL.md` (parent of `references/`).
 
 ## Host and Environment
 
 Preview is served on a **local HTTP port** so the user can interactively view and test it. Do not link or ask the user to open a raw filesystem `.html` path as the primary visual.
 
-Skill directory: the folder that contains this `SKILL.md`.
 Output directory: `~/.agent-skills/visualizations/` (create it if missing, or use `${AGENT_VISUALIZATIONS_DIR:-~/.agent-skills/visualizations}`). Never write scratch visualization files into the user's git working tree unless explicitly asked.
 
 ## HTML output contract
@@ -58,9 +20,9 @@ Output directory: `~/.agent-skills/visualizations/` (create it if missing, or us
 - Write the editable source as `~/.agent-skills/visualizations/<title>.fragment.html`.
 - Reuse the same title when updating an existing visual so the same port
   keeps serving it.
-- Build the visual for the conversation. Use the open project only when the
-  user asks for a site, app page, component, or change to existing project
-  files — and then do not follow this skill.
+- Build the visual for the conversation. Read the open project only as far
+  as the current question needs matching chrome. If they asked to change
+  project files, stop and hand off to `frontend-design`.
 
 ### Fragment
 
@@ -155,27 +117,22 @@ Choose the smallest composition that fits.
 
 ### UI mockups and design options
 
-Use this when the user is choosing a direction, especially during brainstorming
-or frontend design.
+How to draw the options. When to show them, how many, and when to stop
+are in `SKILL.md`.
 
-- Show **2-3 alternatives** on one screen. Label them A/B/C (or short names).
-  Recommend one in the surrounding message. Ask them to pick. Never present a
-  single polished screen as if the design were already decided.
-- Stay at **reference fidelity**: layout, hierarchy, key regions, representative
-  copy, and a hint of tone. Grey or labeled blocks are enough for secondary
-  areas. Do not design every control, empty state, icon, or dashboard widget.
-  Do not invent a complete design system. Raise fidelity only after they pick
-  an option and ask to refine it.
-- 2-4 options max. One question per screen (layout *or* density *or* navigation,
-  not all at once). Put the question on the screen as a short heading.
+- Label options A/B/C (or short names). Stay at **reference fidelity**:
+  layout, hierarchy, key regions, representative copy, and a hint of tone.
+  Grey or labeled blocks are enough for secondary areas. Do not design every
+  control, empty state, icon, or dashboard widget. Do not invent a complete
+  design system. Raise fidelity only after they pick an option and ask to
+  refine it.
 - Make each option selectable (`button` or a clickable surface with
   `data-choice` and `aria-pressed`). Selection is local visual feedback only;
   the user confirms in chat.
 - The visualization is the preview, not a widget inside the depicted product.
-- Use product and platform context already available in the conversation;
-  don't search the project to render a mockup. Match the product's chrome,
-  navigation, typography, colors, and content only as far as the question
-  needs. If its design is unavailable, infer a light sketch from the platform.
+- Use product and platform context already in the conversation. Read the
+  project only as far as the current visual question needs matching chrome.
+  If its design is unavailable, infer a light sketch from the platform.
 - NEVER use visualization CSS variables or utility classes inside a mockup
   (for example, `--card`, `--font-size-base`, `.card`, or `.btn`). Option
   frames around the mockups may use those utilities; the depicted product may

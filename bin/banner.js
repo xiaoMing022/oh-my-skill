@@ -62,7 +62,7 @@ export function renderBanner({ columns = process.stdout.columns || 80, version =
     ...paintWord('SKILLS', { color: c.green, scaleX }),
     '',
     `${c.bold}${c.yellow}  ░▒▓█ PIXEL SKILLS FOR EVERY AGENT █▓▒░${c.reset}`,
-    version ? `${c.dim}  v${version}   design-preview · html-prototype${c.reset}` : '',
+    version ? `${c.dim}  v${version}   visual-brainstorm · html-prototype${c.reset}` : '',
     '',
     bar(width, '▀', c.dim),
     '',

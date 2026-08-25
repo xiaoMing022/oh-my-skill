@@ -35,9 +35,9 @@ function collectLog() {
 }
 
 test('parseArgs maps -a to --agent, not --all', () => {
-  const parsed = parseArgs(['node', 'cli.js', 'add', 'design-preview', '-a', 'grok,claude', '--all']);
+  const parsed = parseArgs(['node', 'cli.js', 'add', 'visual-brainstorm', '-a', 'grok,claude', '--all']);
   assert.equal(parsed.command, 'add');
-  assert.deepEqual(parsed.rest, ['design-preview']);
+  assert.deepEqual(parsed.rest, ['visual-brainstorm']);
   assert.equal(parsed.flags.all, true);
   assert.deepEqual(parsed.flags.agents, ['grok', 'claude']);
 });
@@ -47,10 +47,10 @@ test('parseArgs rejects unknown flags', () => {
 });
 
 test('parseFrontmatter reads folded descriptions', () => {
-  const content = fs.readFileSync(path.join(PKG_ROOT, 'skills', 'design-preview', 'SKILL.md'), 'utf8');
+  const content = fs.readFileSync(path.join(PKG_ROOT, 'skills', 'visual-brainstorm', 'SKILL.md'), 'utf8');
   const fm = parseFrontmatter(content);
-  assert.equal(fm.name, 'design-preview');
-  assert.match(fm.description, /Show reference visuals/);
+  assert.equal(fm.name, 'visual-brainstorm');
+  assert.match(fm.description, /Visual brainstorming/);
   assert.doesNotMatch(fm.description, /\n/);
 });
 
@@ -86,12 +86,12 @@ test('add copies into store then symlinks agent dirs', async () => {
   fs.mkdirSync(path.join(home, '.grok'));
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
-  const code = await run(['node', 'cli.js', 'add', 'design-preview', '--agent', 'grok,agents'], ctx);
+  const code = await run(['node', 'cli.js', 'add', 'visual-brainstorm', '--agent', 'grok,agents'], ctx);
   assert.equal(code, 0);
 
-  const stored = path.join(storeDir(home), 'skills', 'design-preview', 'SKILL.md');
-  const grokLink = path.join(home, '.grok', 'skills', 'design-preview');
-  const agentsLink = path.join(home, '.agents', 'skills', 'design-preview');
+  const stored = path.join(storeDir(home), 'skills', 'visual-brainstorm', 'SKILL.md');
+  const grokLink = path.join(home, '.grok', 'skills', 'visual-brainstorm');
+  const agentsLink = path.join(home, '.agents', 'skills', 'visual-brainstorm');
   assert.equal(fs.existsSync(stored), true);
   assert.equal(fs.lstatSync(grokLink).isSymbolicLink(), true);
   assert.equal(fs.realpathSync(grokLink), fs.realpathSync(path.dirname(stored)));
@@ -99,7 +99,7 @@ test('add copies into store then symlinks agent dirs', async () => {
   assert.equal(isManagedPath(grokLink, ctx), true);
 
   const meta = JSON.parse(fs.readFileSync(path.join(storeDir(home), 'install.json'), 'utf8'));
-  assert.deepEqual(meta.installed, ['design-preview']);
+  assert.deepEqual(meta.installed, ['visual-brainstorm']);
 
   fs.rmSync(home, { recursive: true, force: true });
 });
@@ -110,12 +110,12 @@ test('remove --agent keeps the store when other agents may still use it', async 
   fs.mkdirSync(path.join(home, '.cursor'));
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
-  await run(['node', 'cli.js', 'add', 'design-preview', '--agent', 'grok,cursor'], ctx);
-  const code = await run(['node', 'cli.js', 'remove', 'design-preview', '--agent', 'cursor'], ctx);
+  await run(['node', 'cli.js', 'add', 'visual-brainstorm', '--agent', 'grok,cursor'], ctx);
+  const code = await run(['node', 'cli.js', 'remove', 'visual-brainstorm', '--agent', 'cursor'], ctx);
   assert.equal(code, 0);
-  assert.equal(fs.existsSync(path.join(home, '.cursor', 'skills', 'design-preview')), false);
-  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'design-preview')), true);
-  assert.equal(fs.existsSync(path.join(storeDir(home), 'skills', 'design-preview', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.cursor', 'skills', 'visual-brainstorm')), false);
+  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'visual-brainstorm')), true);
+  assert.equal(fs.existsSync(path.join(storeDir(home), 'skills', 'visual-brainstorm', 'SKILL.md')), true);
   fs.rmSync(home, { recursive: true, force: true });
 });
 
@@ -135,7 +135,7 @@ test('--project copies instead of symlinking', async () => {
 
 test('doctor reports broken grok links', async () => {
   const home = tmpHome();
-  const dest = path.join(home, '.grok', 'skills', 'design-preview');
+  const dest = path.join(home, '.grok', 'skills', 'visual-brainstorm');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.symlinkSync(path.join(home, 'missing-target'), dest);
   const { log, lines } = collectLog();
@@ -148,12 +148,12 @@ test('doctor reports broken grok links', async () => {
 
 test('add --force repairs a broken symlink', async () => {
   const home = tmpHome();
-  const dest = path.join(home, '.grok', 'skills', 'design-preview');
+  const dest = path.join(home, '.grok', 'skills', 'visual-brainstorm');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.symlinkSync('/Users/a1021500136/Desktop/oh-my-skills/design-preview', dest);
+  fs.symlinkSync('/Users/a1021500136/Desktop/oh-my-skills/visual-brainstorm', dest);
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
-  const code = await run(['node', 'cli.js', 'add', 'design-preview', '--agent', 'grok'], ctx);
+  const code = await run(['node', 'cli.js', 'add', 'visual-brainstorm', '--agent', 'grok'], ctx);
   assert.equal(code, 0);
   assert.equal(fs.existsSync(path.join(dest, 'SKILL.md')), true);
   fs.rmSync(home, { recursive: true, force: true });
@@ -168,7 +168,7 @@ test('CLI help and list exit 0', () => {
     env: { ...process.env, HOME: tmpHome() },
   });
   assert.equal(list.status, 0);
-  assert.match(list.stdout, /design-preview/);
+  assert.match(list.stdout, /visual-brainstorm/);
   assert.match(list.stdout, /html-prototype/);
 });
 
@@ -206,7 +206,7 @@ test('add --all -y prints the pixel banner and skips the picker', () => {
   });
   assert.equal(result.status, 0);
   assert.match(result.stdout, /PIXEL SKILLS FOR EVERY AGENT/);
-  assert.match(result.stdout, /design-preview/);
+  assert.match(result.stdout, /visual-brainstorm/);
   fs.rmSync(home, { recursive: true, force: true });
 });
 

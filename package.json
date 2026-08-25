@@ -1,7 +1,7 @@
 {
   "name": "@lxy10086/oh-my-skills",
-  "version": "0.1.1",
-  "description": "Cross-agent design-preview and html-prototype skills with an installer CLI",
+  "version": "0.1.3",
+  "description": "Cross-agent visual-brainstorm and html-prototype skills with an installer CLI",
   "type": "module",
   "main": "bin/lib.js",
   "bin": {
@@ -31,7 +31,7 @@
     "cursor",
     "codex",
     "grok",
-    "design-preview",
+    "visual-brainstorm",
     "html-prototype"
   ],
   "author": "xiaoMing022",

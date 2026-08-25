@@ -258,10 +258,13 @@ export function buildAgentChoices(ctx, flags) {
     const targetPath = flags.project ? agent.project?.(ctx.cwd) : agent.global(ctx.home);
     if (!targetPath) continue;
     const detected = Boolean(agent.always || agent.detect(ctx.home));
+    const shortPath = targetPath.startsWith(ctx.home)
+      ? `~${targetPath.slice(ctx.home.length)}`
+      : targetPath;
     choices.push({
       id: agent.id,
       label: `${agent.name}  ${c.dim}(${agent.id})${c.reset}`,
-      hint: detected ? `${c.green}detected${c.reset}  ${targetPath}` : `${c.dim}not found${c.reset}  ${targetPath}`,
+      hint: detected ? `${c.green}detected${c.reset}  ${c.dim}${shortPath}${c.reset}` : `${c.dim}not found  ${shortPath}${c.reset}`,
       selected: detected,
     });
   }
@@ -641,7 +644,7 @@ export function cmdUpdate(ctx, names, flags) {
 
 export function cmdInfo(ctx, skillName) {
   if (!skillName) {
-    ctx.log(`${c.red}Please specify a skill name. Example: oh-my-skills info design-preview${c.reset}`);
+    ctx.log(`${c.red}Please specify a skill name. Example: oh-my-skills info visual-brainstorm${c.reset}`);
     return 1;
   }
   const skillMdPath = path.join(ctx.skillsDir, skillName, 'SKILL.md');
@@ -701,7 +704,7 @@ export function cmdDoctor(ctx, flags) {
 
 export function showHelp(log = console.log) {
   log(`
-${c.bold}${c.cyan}oh-my-skills${c.reset} — install design-preview and html-prototype into AI agents
+${c.bold}${c.cyan}oh-my-skills${c.reset} — install visual-brainstorm and html-prototype into AI agents
 
 ${c.bold}USAGE${c.reset}
   $ npx @lxy10086/oh-my-skills <command> [options]
@@ -729,9 +732,9 @@ ${c.bold}OPTIONS${c.reset}
 ${c.bold}EXAMPLES${c.reset}
   $ npx @lxy10086/oh-my-skills add
   $ npx @lxy10086/oh-my-skills add --all -y
-  $ npx @lxy10086/oh-my-skills add design-preview --agent grok,claude
+  $ npx @lxy10086/oh-my-skills add visual-brainstorm --agent grok,claude
   $ npx @lxy10086/oh-my-skills add html-prototype --project
-  $ npx @lxy10086/oh-my-skills remove design-preview --agent cursor
+  $ npx @lxy10086/oh-my-skills remove visual-brainstorm --agent cursor
   $ npx @lxy10086/oh-my-skills update
 `);
 }
