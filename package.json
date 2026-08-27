@@ -1,6 +1,6 @@
 {
   "name": "@lxy10086/oh-my-skills",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Cross-agent skills (visual-brainstorm, html-prototype, design-unify) with an installer CLI for Codex, OpenCode, Hermes, WorkBuddy, Pi, and more",
   "type": "module",
   "main": "bin/lib.js",

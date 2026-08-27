@@ -1,0 +1,10 @@
+.DS_Store
+*.pyc
+**/__pycache__/**
+**/__pycache__
+__pycache__/
+.playwright-mcp/
+node_modules/
+npm-debug.log*
+.npm-pack/
+tests/
