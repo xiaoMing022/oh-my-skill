@@ -18,7 +18,7 @@ import {
   buildAgentChoices,
 } from '../bin/lib.js';
 import { renderBanner } from '../bin/banner.js';
-import { shouldPrompt } from '../bin/prompt.js';
+import { shouldPrompt, truncatePlain, fitPlainWidth, visibleWidth } from '../bin/prompt.js';
 
 const CLI = path.join(PKG_ROOT, 'bin', 'cli.js');
 
@@ -239,6 +239,11 @@ test('shouldPrompt only in an interactive TTY without -y', () => {
   assert.equal(shouldPrompt({ isTTY: false }, { yes: false, dryRun: false }), false);
   assert.equal(shouldPrompt({ isTTY: true }, { yes: true, dryRun: false }), false);
   assert.equal(shouldPrompt({ isTTY: true }, { yes: false, dryRun: true }), false);
+});
+
+test('picker line helpers keep rows within terminal width', () => {
+  assert.equal(truncatePlain('abcdefghij', 7), 'abcdef…');
+  assert.ok(visibleWidth(fitPlainWidth(`${'\x1b[32m'}◉${'\x1b[0m'}  ` + 'x'.repeat(120), 40)) <= 40);
 });
 
 test('buildAgentChoices pre-selects detected agents', () => {

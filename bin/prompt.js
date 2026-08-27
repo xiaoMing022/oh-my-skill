@@ -9,7 +9,7 @@ export function buildSkillChoices(skills) {
   return skills.map((skill) => ({
     id: skill.name,
     label: skill.name,
-    hint: skill.description.slice(0, 72),
+    hint: skill.description,
     selected: true,
   }));
 }
@@ -61,7 +61,7 @@ function promptRaw(ctx, { title, items, allKey }) {
   const state = {
     cursor: 0,
     items: items.map((item) => ({ ...item })),
-    lineCount: 0,
+    listLineCount: 0,
   };
 
   return new Promise((resolve, reject) => {
@@ -82,25 +82,32 @@ function promptRaw(ctx, { title, items, allKey }) {
       reject(Object.assign(new Error('canceled'), { code: 'CANCELED' }));
     };
 
-    const draw = () => {
-      if (state.lineCount) stdout.write(`\x1b[${state.lineCount}A\x1b[J`);
-      const lines = [
-        `${c.bold}${title}${c.reset}`,
-        `${c.dim}  space toggle · ↑/↓ move · ${allKey} all · enter confirm · q quit${c.reset}`,
-        '',
-      ];
+    const columns = () => Math.max(40, Number(stdout.columns) || 80);
+
+    const drawList = () => {
+      if (state.listLineCount > 0) {
+        // Move to the first list row, then clear everything below.
+        stdout.write(`\x1b[${state.listLineCount}A\x1b[J`);
+      }
+
+      const width = columns();
+      const listLines = [];
       state.items.forEach((item, i) => {
         const pointer = i === state.cursor ? `${c.cyan}▶${c.reset}` : ' ';
         const box = item.selected ? `${c.green}◉${c.reset}` : `${c.dim}○${c.reset}`;
         const label = i === state.cursor ? `${c.bold}${item.label}${c.reset}` : item.label;
-        lines.push(` ${pointer} ${box}  ${label}  ${item.hint || ''}`);
+        const prefix = ` ${pointer} ${box}  ${label}`;
+        const prefixWidth = visibleWidth(prefix);
+        const room = Math.max(0, width - prefixWidth - 2);
+        const hint = room > 8 ? `  ${c.dim}${truncatePlain(item.hint || '', room)}${c.reset}` : '';
+        listLines.push(fitPlainWidth(`${prefix}${hint}`, width));
       });
       const selected = state.items.filter((item) => item.selected).length;
-      lines.push('');
-      lines.push(`  ${c.dim}${selected}/${state.items.length} selected${c.reset}`);
-      const text = `${lines.join('\n')}\n`;
-      state.lineCount = text.split('\n').length - 1;
-      stdout.write(text);
+      listLines.push('');
+      listLines.push(fitPlainWidth(`  ${c.dim}${selected}/${state.items.length} selected${c.reset}`, width));
+
+      state.listLineCount = listLines.length;
+      stdout.write(`${listLines.join('\n')}\n`);
     };
 
     let seq = '';
@@ -113,33 +120,35 @@ function promptRaw(ctx, { title, items, allKey }) {
       }
       if (key === ' ') {
         state.items[state.cursor].selected = !state.items[state.cursor].selected;
-        return draw();
+        return drawList();
       }
       if (key === allKey || key === allKey.toUpperCase()) {
         const allOn = state.items.every((item) => item.selected);
         for (const item of state.items) item.selected = !allOn;
-        return draw();
+        return drawList();
       }
       seq += key;
       if (seq.endsWith('[A') || key === 'k') {
         state.cursor = (state.cursor + state.items.length - 1) % state.items.length;
         seq = '';
-        return draw();
+        return drawList();
       }
       if (seq.endsWith('[B') || key === 'j') {
         state.cursor = (state.cursor + 1) % state.items.length;
         seq = '';
-        return draw();
+        return drawList();
       }
       if (seq.length > 4) seq = '';
     };
 
     stdout.write('\x1b[?25l');
+    stdout.write(`\n${c.bold}${title}${c.reset}\n`);
+    stdout.write(`${c.dim}  space toggle · ↑/↓ move · ${allKey} all · enter confirm · q quit${c.reset}\n\n`);
     stdin.setRawMode(true);
     stdin.resume();
     stdin.setEncoding('utf8');
     stdin.on('data', onData);
-    draw();
+    drawList();
   });
 }
 
@@ -153,6 +162,24 @@ function readLine(stdin, stdout) {
   });
 }
 
-function strip(text) {
+export function strip(text) {
   return String(text).replace(/\x1b\[[0-9;]*m/g, '');
+}
+
+export function visibleWidth(text) {
+  return strip(text).length;
+}
+
+export function truncatePlain(text, max) {
+  const value = String(text || '').replace(/\s+/g, ' ').trim();
+  if (max <= 0) return '';
+  if (value.length <= max) return value;
+  if (max <= 1) return '…';
+  return `${value.slice(0, max - 1)}…`;
+}
+
+/** Keep a single terminal row: truncate plain content if wider than columns. */
+export function fitPlainWidth(text, width) {
+  if (visibleWidth(text) <= width) return text;
+  return truncatePlain(strip(text), width);
 }
