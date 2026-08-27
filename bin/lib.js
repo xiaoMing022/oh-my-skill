@@ -82,10 +82,39 @@ export const AGENTS = {
   opencode: {
     id: 'opencode',
     name: 'OpenCode',
+    aliases: ['open-code'],
     type: 'skill',
     global: (home) => path.join(home, '.config', 'opencode', 'skills'),
     project: (cwd) => path.join(cwd, '.opencode', 'skills'),
     detect: (home) => exists(path.join(home, '.config', 'opencode')) || exists(path.join(home, '.opencode')),
+  },
+  hermes: {
+    id: 'hermes',
+    name: 'Hermes',
+    aliases: ['hermes-agent', 'nous'],
+    type: 'skill',
+    global: (home) => path.join(hermesHome(home), 'skills'),
+    project: null,
+    detect: (home) => exists(hermesHome(home)),
+  },
+  workbuddy: {
+    id: 'workbuddy',
+    name: 'WorkBuddy',
+    aliases: ['work-buddy', 'wb'],
+    type: 'skill',
+    global: (home) => path.join(home, '.workbuddy', 'skills'),
+    // WorkBuddy also discovers project skills under .agents/skills
+    project: (cwd) => path.join(cwd, '.agents', 'skills'),
+    detect: (home) => exists(path.join(home, '.workbuddy')),
+  },
+  pi: {
+    id: 'pi',
+    name: 'Pi',
+    aliases: ['pi-agent', 'pi-coding-agent'],
+    type: 'skill',
+    global: (home) => path.join(home, '.pi', 'agent', 'skills'),
+    project: (cwd) => path.join(cwd, '.pi', 'skills'),
+    detect: (home) => exists(path.join(home, '.pi')),
   },
   copilot: {
     id: 'copilot',
@@ -114,6 +143,16 @@ export const AGENTS = {
     detect: (home) => exists(path.join(home, '.codeium', 'windsurf')),
   },
 };
+
+function hermesHome(home) {
+  const fromEnv = process.env.HERMES_HOME?.trim();
+  if (!fromEnv) return path.join(home, '.hermes');
+  if (fromEnv === '~') return home;
+  if (fromEnv.startsWith('~/') || fromEnv.startsWith('~\\')) {
+    return path.join(home, fromEnv.slice(2));
+  }
+  return fromEnv;
+}
 
 export function exists(p) {
   try {
@@ -704,7 +743,7 @@ export function cmdDoctor(ctx, flags) {
 
 export function showHelp(log = console.log) {
   log(`
-${c.bold}${c.cyan}oh-my-skills${c.reset} — install visual-brainstorm and html-prototype into AI agents
+${c.bold}${c.cyan}oh-my-skills${c.reset} — install skills into AI agents (Codex, OpenCode, Hermes, WorkBuddy, Pi, …)
 
 ${c.bold}USAGE${c.reset}
   $ npx @lxy10086/oh-my-skills <command> [options]
@@ -721,7 +760,7 @@ ${c.bold}COMMANDS${c.reset}
 
 ${c.bold}OPTIONS${c.reset}
   ${c.yellow}--all${c.reset}                 Apply to every skill in the package
-  ${c.yellow}-a, --agent <ids>${c.reset}     grok,claude,cursor,codex,gemini,... or all
+  ${c.yellow}-a, --agent <ids>${c.reset}     codex,opencode,hermes,workbuddy,pi,grok,claude,... or all
   ${c.yellow}-p, --project${c.reset}         Install into the current workspace (copies files)
   ${c.yellow}--copy${c.reset}                Copy files instead of symlinking
   ${c.yellow}--link${c.reset}                Link directly to this package (local development)
@@ -732,6 +771,7 @@ ${c.bold}OPTIONS${c.reset}
 ${c.bold}EXAMPLES${c.reset}
   $ npx @lxy10086/oh-my-skills add
   $ npx @lxy10086/oh-my-skills add --all -y
+  $ npx @lxy10086/oh-my-skills add --all --agent codex,opencode,hermes,workbuddy,pi
   $ npx @lxy10086/oh-my-skills add visual-brainstorm --agent grok,claude
   $ npx @lxy10086/oh-my-skills add html-prototype --project
   $ npx @lxy10086/oh-my-skills remove visual-brainstorm --agent cursor

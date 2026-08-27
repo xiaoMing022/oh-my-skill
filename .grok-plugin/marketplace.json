@@ -1,13 +1,21 @@
 {
   "name": "oh-my-skills",
-  "description": "Visual brainstorming and HTML prototyping skills",
+  "description": "Visual brainstorming, HTML prototyping, and design-unify skills",
   "owner": {
     "name": "xiaoMing022"
   },
   "plugins": [
     {
       "name": "oh-my-skills",
-      "description": "Visual brainstorming and clickable HTML prototyping",
+      "description": "Visual brainstorm, clickable HTML prototype, and frontend design unify",
+      "version": "0.1.4",
+      "category": "productivity",
+      "homepage": "https://github.com/xiaoMing022/oh-my-skill",
+      "keywords": [
+        "visual-brainstorm",
+        "html-prototype",
+        "design-unify"
+      ],
       "source": {
         "type": "local",
         "path": "."

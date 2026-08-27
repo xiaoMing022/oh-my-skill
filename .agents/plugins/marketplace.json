@@ -1,0 +1,20 @@
+{
+  "name": "oh-my-skills",
+  "interface": {
+    "displayName": "oh-my-skills"
+  },
+  "plugins": [
+    {
+      "name": "oh-my-skills",
+      "source": {
+        "source": "local",
+        "path": "."
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

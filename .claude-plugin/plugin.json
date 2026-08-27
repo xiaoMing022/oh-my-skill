@@ -1,11 +1,17 @@
 {
   "name": "oh-my-skills",
-  "description": "Cross-agent visual brainstorming and clickable HTML prototyping skills",
-  "version": "0.1.3",
+  "description": "Cross-agent visual brainstorming, HTML prototyping, and design-unify skills",
+  "version": "0.1.4",
   "author": {
     "name": "xiaoMing022"
   },
   "homepage": "https://github.com/xiaoMing022/oh-my-skill",
   "repository": "https://github.com/xiaoMing022/oh-my-skill",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "visual-brainstorm",
+    "html-prototype",
+    "design-unify",
+    "skills"
+  ]
 }

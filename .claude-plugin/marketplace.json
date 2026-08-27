@@ -1,15 +1,16 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "oh-my-skills",
-  "description": "Visual brainstorming and HTML prototyping skills",
+  "description": "Visual brainstorming, HTML prototyping, and design-unify skills",
   "owner": {
     "name": "xiaoMing022"
   },
   "plugins": [
     {
       "name": "oh-my-skills",
-      "description": "Visual brainstorming and clickable HTML prototyping",
       "source": ".",
+      "description": "Visual brainstorm, clickable HTML prototype, and frontend design unify",
+      "version": "0.1.4",
       "category": "productivity"
     }
   ]

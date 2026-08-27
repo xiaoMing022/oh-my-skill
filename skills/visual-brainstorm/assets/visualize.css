@@ -865,3 +865,8 @@ svg.lucide {
 .text-destructive {
   color: var(--destructive);
 }
+
+.viz-choice-confirm-hint {
+  margin: 0 0 0.75rem;
+  max-width: 40rem;
+}

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from html import escape
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -10,6 +11,13 @@ from pathlib import Path
 
 _SKILL_DIRECTORY = Path(__file__).resolve().parents[1]
 _FRAGMENT_PLACEHOLDER = "<!--__INLINE_VISUALIZATION_FRAGMENT__-->"
+_DATA_CHOICE_RE = re.compile(r"\bdata-choice\s*=")
+_CHOICE_CONFIRM_HINT = (
+    '<p class="viz-choice-confirm-hint text-small text-muted" '
+    'data-choice-confirm-hint="">'
+    "点选仅本地预览；请在对话里回复 A/B/C 确认。"
+    "</p>\n"
+)
 _RESOURCE_SOURCES = " ".join(
     (
         "blob:",
@@ -44,8 +52,18 @@ _FRAME_CSP = "; ".join(
 _SHELL_CSP = _FRAME_CSP.replace("frame-src 'none'", "frame-src 'self'")
 
 
+def _with_choice_confirm_hint(fragment: str) -> str:
+    if "data-choice-confirm-hint" in fragment:
+        return fragment
+    if _DATA_CHOICE_RE.search(fragment) is None:
+        return fragment
+    return _CHOICE_CONFIRM_HINT + fragment
+
+
 def render(fragment_path: Path, title: str | None = None) -> str:
-    fragment = fragment_path.read_text(encoding="utf-8")
+    fragment = _with_choice_confirm_hint(
+        fragment_path.read_text(encoding="utf-8"),
+    )
     stylesheet = (_SKILL_DIRECTORY / "assets" / "visualize.css").read_text(
         encoding="utf-8",
     )

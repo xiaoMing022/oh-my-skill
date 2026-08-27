@@ -1,0 +1,24 @@
+{
+  "name": "oh-my-skills",
+  "version": "0.1.4",
+  "description": "Visual brainstorming, HTML prototyping, and design-unify skills for coding agents",
+  "author": {
+    "name": "xiaoMing022",
+    "url": "https://github.com/xiaoMing022"
+  },
+  "homepage": "https://github.com/xiaoMing022/oh-my-skill",
+  "repository": "https://github.com/xiaoMing022/oh-my-skill",
+  "license": "MIT",
+  "keywords": [
+    "visual-brainstorm",
+    "html-prototype",
+    "design-unify",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "oh-my-skills",
+    "shortDescription": "Visual brainstorm, HTML prototype, and design unify",
+    "longDescription": "Install visual-brainstorm, html-prototype, and design-unify as Agent Skills for layout selection, clickable prototypes, and frontend style unification."
+  }
+}

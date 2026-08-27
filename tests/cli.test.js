@@ -58,6 +58,13 @@ test('findAgent resolves aliases', () => {
   assert.equal(findAgent('claude-code').id, 'claude');
   assert.equal(findAgent('cline').id, 'agents');
   assert.equal(findAgent('agy').id, 'antigravity-cli');
+  assert.equal(findAgent('openai').id, 'codex');
+  assert.equal(findAgent('open-code').id, 'opencode');
+  assert.equal(findAgent('hermes-agent').id, 'hermes');
+  assert.equal(findAgent('nous').id, 'hermes');
+  assert.equal(findAgent('work-buddy').id, 'workbuddy');
+  assert.equal(findAgent('wb').id, 'workbuddy');
+  assert.equal(findAgent('pi-coding-agent').id, 'pi');
   assert.equal(findAgent('nope'), null);
 });
 
@@ -77,7 +84,55 @@ test('resolveTargets --agent all includes plugin paths', () => {
   const targets = resolveTargets({ flags: { agents: ['all'], project: false }, home, cwd: home });
   assert.ok(targets.some((t) => t.id === 'gemini' && t.type === 'plugin'));
   assert.ok(targets.some((t) => t.id === 'codex'));
+  assert.ok(targets.some((t) => t.id === 'opencode'));
+  assert.ok(targets.some((t) => t.id === 'hermes' && t.path.endsWith(path.join('.hermes', 'skills'))));
+  assert.ok(targets.some((t) => t.id === 'workbuddy' && t.path.endsWith(path.join('.workbuddy', 'skills'))));
+  assert.ok(targets.some((t) => t.id === 'pi' && t.path.endsWith(path.join('.pi', 'agent', 'skills'))));
   assert.ok(!targets.some((t) => t.path.includes(`${path.sep}plugins${path.sep}`) && t.id === 'claude'));
+  fs.rmSync(home, { recursive: true, force: true });
+});
+
+test('hermes respects HERMES_HOME and has no project path', () => {
+  const home = tmpHome();
+  const profile = path.join(home, 'custom-hermes');
+  const prev = process.env.HERMES_HOME;
+  process.env.HERMES_HOME = profile;
+  try {
+    const targets = resolveTargets({ flags: { agents: ['hermes'], project: false }, home, cwd: home });
+    assert.equal(targets.length, 1);
+    assert.equal(targets[0].path, path.join(profile, 'skills'));
+    const projectTargets = resolveTargets({ flags: { agents: ['hermes'], project: true }, home, cwd: home });
+    assert.equal(projectTargets.length, 0);
+  } finally {
+    if (prev === undefined) delete process.env.HERMES_HOME;
+    else process.env.HERMES_HOME = prev;
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test('add installs into codex, opencode, hermes, workbuddy, and pi', async () => {
+  const home = tmpHome();
+  for (const dir of [
+    path.join(home, '.codex'),
+    path.join(home, '.config', 'opencode'),
+    path.join(home, '.hermes'),
+    path.join(home, '.workbuddy'),
+    path.join(home, '.pi'),
+  ]) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  const { log } = collectLog();
+  const ctx = createContext({ home, cwd: home, log });
+  const code = await run([
+    'node', 'cli.js', 'add', 'design-unify',
+    '--agent', 'codex,opencode,hermes,workbuddy,pi',
+  ], ctx);
+  assert.equal(code, 0);
+  assert.equal(fs.existsSync(path.join(home, '.codex', 'skills', 'design-unify', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.config', 'opencode', 'skills', 'design-unify', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.hermes', 'skills', 'design-unify', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.workbuddy', 'skills', 'design-unify', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.pi', 'agent', 'skills', 'design-unify', 'SKILL.md')), true);
   fs.rmSync(home, { recursive: true, force: true });
 });
 

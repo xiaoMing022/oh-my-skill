@@ -1,8 +1,8 @@
 {
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "oh-my-skills",
-  "version": "0.1.3",
-  "description": "Cross-agent visual brainstorming and clickable HTML prototyping skills",
+  "version": "0.1.4",
+  "description": "Cross-agent visual brainstorming, HTML prototyping, and design-unify skills",
   "author": {
     "name": "xiaoMing022"
   },
@@ -12,6 +12,12 @@
   "keywords": [
     "visual-brainstorm",
     "html-prototype",
+    "design-unify",
+    "codex",
+    "opencode",
+    "hermes",
+    "workbuddy",
+    "pi",
     "skills"
   ]
 }

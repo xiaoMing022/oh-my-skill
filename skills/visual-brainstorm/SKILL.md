@@ -27,10 +27,12 @@ direction and stop. Do not write project code, do not write a spec, and do
 not start `html-prototype` or `frontend-design` until they ask.
 
 When producing or updating a visual, read `references/render-kit.md` and
-follow it. Skip it for text-only questions.
+follow it. Also read `references/charts.md` for charts, plots, grids, or
+allocations; `references/maps.md` for maps. Skip all of these for text-only
+questions.
 
 Copy into every compaction summary:
-`Reload visual-brainstorm (and render-kit.md before creating or updating a preview).`
+`Reload visual-brainstorm (render-kit.md before any preview; charts.md / maps.md only when that visual needs them).`
 
 ## Neighbors
 
@@ -41,8 +43,9 @@ Copy into every compaction summary:
 | Clickable HTML prototype to preview or save | `html-prototype` |
 | UI implemented in the open project | `frontend-design` |
 
-Hand off only after the user asks. If `html-prototype` invoked this to confirm
-one visual fork, do that fork and return.
+Hand off when they ask to build, save/落盘 a product prototype, or implement
+in the project. If `html-prototype` invoked this to confirm one visual fork,
+do that fork and return.
 
 ## Session
 
@@ -54,17 +57,22 @@ Skip any step whose answer is already in the conversation.
 2. **Text questions** — one at a time, multiple choice when it fits: purpose,
    constraints, success criteria, scope. If the answer is words, stay in chat.
 3. **Visual forks** — as soon as the question is layout, navigation, density,
-   tone, or page structure, read `references/render-kit.md` and show 2-3
+   tone, or page structure, read `references/render-kit.md` (plus
+   `charts.md` / `maps.md` only if that visual needs them) and show 2-3
    options. One question per screen. Recommend one in chat with a one-line
    why. Ask them to pick.
 4. **Record and continue** — they confirm in chat (or request a change).
    Remember the choice. Reuse the same preview title and URL for the next
    fork. If they reverse a choice, redraw that fork; do not restart the
    session.
-5. **Stop** — when no visual fork remains, summarize the chosen direction
-   (layout, navigation, density, tone, and anything still open). Ask whether
-   to continue into `html-prototype` or `frontend-design`. Do not start
-   either until they say so.
+5. **Stop** — when no visual fork remains, give a short direction summary
+   (layout, navigation, density, tone, and anything still open), then ask
+   whether to continue into `html-prototype` or `frontend-design`.
+
+   End this skill in the same turn when they have a chosen direction and ask
+   to build a prototype, save/落盘 a product prototype, or implement in the
+   project: hand off to `html-prototype` or `frontend-design` and leave the
+   sketch as-is on the port.
 
 ## Visual vs text
 
@@ -85,8 +93,9 @@ labeled nodes and edges fully explain a static structure.
   hint of tone. Grey or labeled blocks for secondary areas. Raise fidelity
   only after they pick and ask to refine.
 - Options are selectable locally (`data-choice`, `aria-pressed`). The
-  decision is confirmed in chat. No control sends a message back to the
-  agent.
+  decision is confirmed in chat. The host shows a confirm-in-chat hint when
+  `[data-choice]` is present; do not add a second copy in the fragment. No
+  control sends a message back to the agent.
 - Option frames may use render-kit utilities; the depicted product may not.
 - Compare at most two page-level layout sketches side by side. Do not
   present a single polished screen as if the direction were already decided.
@@ -105,6 +114,8 @@ which option they want. Do not dump a table of the same content.
 ## After they pick
 
 The terminal message is a short direction summary, then a question about
-next step. Exporting the current preview to a standalone HTML file is only
-for an explicit save of *this* visual — a clickable product prototype is
-`html-prototype`; code in the repo is `frontend-design`.
+next step — unless they already asked to prototype, 落盘, or implement, in
+which case hand off immediately. Exporting the current preview to a
+standalone HTML file is only for an explicit save of *this* visual — a
+clickable product prototype is `html-prototype`; code in the repo is
+`frontend-design`.
