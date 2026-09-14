@@ -1,16 +1,39 @@
 # oh-my-skills
 
-Cross-agent skills for **visual brainstorming**, **clickable HTML prototypes**, and **design unify**.
+Cross-agent skills for **visual brainstorming**, **figure-out**, **code-chain**, **coherent frontend design**, **clickable HTML prototypes**, and **design unify**.
 
 First-class install targets include **Codex**, **OpenCode**, **Hermes**, **WorkBuddy**, and **Pi**, plus Grok, Claude Code, Cursor, Gemini / Antigravity, Copilot, Roo, Windsurf, and any agent that reads Agent Skills (`SKILL.md`).
 
-| Skill | What it does |
-| --- | --- |
-| [visual-brainstorm](skills/visual-brainstorm/) | See-and-pick UI direction: 2–3 mid-fidelity options on a local port; also charts, maps, and labs |
-| [html-prototype](skills/html-prototype/) | PRD / Feishu doc / screenshot → clickable HTML prototype, preview, optional export |
-| [design-unify](skills/design-unify/) | Inventory the project's UI stack, confirm a baseline, plan if large, then unify styles |
+| Skill                                         | What it does                                                                                      |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [visual-brainstorm](skills/visual-brainstorm/) | Plan visual decisions, compare options, confirm across rounds, and retain resumable previews; also charts, maps, and labs |
+| [figure-out](skills/figure-out/) | Figure out hard technical tasks: compare implementation approaches, evaluate and recommend, then plan and execute after confirmation |
+| [code-chain](skills/code-chain/) | Trace what existing code does for a click, request, or function; cite key hops and show the path in Mermaid |
+| [my-designer](skills/my-designer/) | Build pages and components from one project design system; confirm missing themes visually, then implement consistently |
+| [html-prototype](skills/html-prototype/)       | PRD / Feishu doc / screenshot → clickable HTML prototype, preview, optional export               |
+| [design-unify](skills/design-unify/)           | Inventory the project's UI stack, confirm a baseline, plan if large, then unify styles            |
 
 Requires **Node.js 18+** to install. Preview servers need **python3**.
+
+`my-designer` reuses the app's active theme and shared components. If no
+usable design baseline exists, it uses `visual-brainstorm` for one theme choice
+before implementation. Experiment files and optional working design records
+stay outside the repo; production styles remain in the app's native theme
+source so builds do not depend on an agent's local cache. Broad style migrations
+remain the responsibility of `design-unify`.
+
+`figure-out` is for 理清思路: the architecture counterpart of
+`visual-brainstorm`. It splits hard technical work into decision
+checkpoints, compares approaches, then enters plan mode and executes
+only after confirmation. Decision records stay outside the repo.
+
+`code-chain` traces a named behavior through the open project: real
+entry, numbered hops with citations, and one Mermaid diagram. It explains
+what already happens; it does not choose a new design.
+
+The name `my-designer` avoids colliding with generic frontend skills installed by
+other packages.
+
 
 ---
 
@@ -74,16 +97,16 @@ npx @lxy10086/oh-my-skills info visual-brainstorm
 npx @lxy10086/oh-my-skills doctor
 ```
 
-| Option | Meaning |
-| --- | --- |
-| `--all` | Every skill in the package |
+| Option                | Meaning                                                                                                                                                                                   |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--all`             | Every skill in the package                                                                                                                                                                |
 | `-a, --agent <ids>` | `codex`, `opencode`, `hermes`, `workbuddy`, `pi`, `grok`, `claude`, `cursor`, `gemini`, `antigravity-cli`, `copilot`, `roo`, `windsurf`, `agents`, or `all` |
-| `-p, --project` | Write into the current workspace (copies files) |
-| `--copy` | Copy instead of symlink (global installs default to symlink) |
-| `--link` | Symlink to this package directory (development) |
-| `--force` | Replace existing files |
-| `--dry-run` | Print actions without writing |
-| `-y, --yes` | Skip prompts; install to detected agents |
+| `-p, --project`     | Write into the current workspace (copies files)                                                                                                                                           |
+| `--copy`            | Copy instead of symlink (global installs default to symlink)                                                                                                                              |
+| `--link`            | Symlink to this package directory (development)                                                                                                                                           |
+| `--force`           | Replace existing files                                                                                                                                                                    |
+| `--dry-run`         | Print actions without writing                                                                                                                                                             |
+| `-y, --yes`         | Skip prompts; install to detected agents                                                                                                                                                  |
 
 Global installs copy skills into `~/.local/share/oh-my-skills`, then symlink from there. That survives `npx` cache cleanup. `--project` copies into the repo so teammates do not need the store.
 
@@ -100,22 +123,22 @@ npx @lxy10086/oh-my-skills remove --all --agent cursor
 
 Interactive `add` lets you tick agents; detected ones start checked. `remove` and `-y` still default to detected agents plus `~/.agents/skills`. Use `--agent all` to create every known path.
 
-| Agent | Global | Project |
-| --- | --- | --- |
-| Universal / Cline | `~/.agents/skills` | `.agents/skills` |
-| Codex | `~/.codex/skills` | `.codex/skills` |
-| OpenCode | `~/.config/opencode/skills` | `.opencode/skills` |
-| Hermes | `$HERMES_HOME/skills` or `~/.hermes/skills` | — |
-| WorkBuddy | `~/.workbuddy/skills` | `.agents/skills` |
-| Pi | `~/.pi/agent/skills` | `.pi/skills` |
-| Grok | `~/.grok/skills` | `.grok/skills` |
-| Claude Code | `~/.claude/skills` | `.claude/skills` |
-| Cursor | `~/.cursor/skills` | `.cursor/skills` |
-| Gemini / Antigravity IDE | `~/.gemini/config/plugins/oh-my-skills` | — |
-| Antigravity CLI | `~/.gemini/antigravity-cli/plugins/oh-my-skills` | — |
-| GitHub Copilot | `~/.copilot/skills` | `.github/skills` |
-| Roo Code | `~/.roo/skills` | `.roo/skills` |
-| Windsurf | `~/.codeium/windsurf/skills` | `.windsurf/skills` |
+| Agent                    | Global                                             | Project              |
+| ------------------------ | -------------------------------------------------- | -------------------- |
+| Universal / Cline        | `~/.agents/skills`                               | `.agents/skills`   |
+| Codex                    | `~/.codex/skills`                                | `.codex/skills`    |
+| OpenCode                 | `~/.config/opencode/skills`                      | `.opencode/skills` |
+| Hermes                   | `$HERMES_HOME/skills` or `~/.hermes/skills`    | —                   |
+| WorkBuddy                | `~/.workbuddy/skills`                            | `.agents/skills`   |
+| Pi                       | `~/.pi/agent/skills`                             | `.pi/skills`       |
+| Grok                     | `~/.grok/skills`                                 | `.grok/skills`     |
+| Claude Code              | `~/.claude/skills`                               | `.claude/skills`   |
+| Cursor                   | `~/.cursor/skills`                               | `.cursor/skills`   |
+| Gemini / Antigravity IDE | `~/.gemini/config/plugins/oh-my-skills`          | —                   |
+| Antigravity CLI          | `~/.gemini/antigravity-cli/plugins/oh-my-skills` | —                   |
+| GitHub Copilot           | `~/.copilot/skills`                              | `.github/skills`   |
+| Roo Code                 | `~/.roo/skills`                                  | `.roo/skills`      |
+| Windsurf                 | `~/.codeium/windsurf/skills`                     | `.windsurf/skills` |
 
 ---
 
@@ -123,17 +146,17 @@ Interactive `add` lets you tick agents; detected ones start checked. `remove` an
 
 **Skills** (`SKILL.md`) are the portable unit. **Plugins / marketplaces** are how some hosts *distribute* a bundle of skills (and sometimes hooks / MCP). This repo ships both: `npx @lxy10086/oh-my-skills add` for skill dirs, and native manifests where the host has a real plugin system.
 
-| Host | Mechanism | Manifest in this repo | How to install as plugin |
-| --- | --- | --- | --- |
-| **Claude Code** | Plugin + marketplace | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | `/plugin marketplace add xiaoMing022/oh-my-skill` then `/plugin install oh-my-skills@oh-my-skills` |
-| **Codex** | Plugin + marketplace | `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` | `codex plugin marketplace add xiaoMing022/oh-my-skill` then `/plugins` (or install `oh-my-skills`) |
-| **Grok Build** | Plugin + marketplace | `.grok-plugin/marketplace.json` | `grok plugin marketplace add xiaoMing022/oh-my-skill` then `grok plugin install oh-my-skills --trust` |
-| **Gemini / Antigravity** | Plugin package | root `plugin.json` (`$schema` = Antigravity) | `npx @lxy10086/oh-my-skills add --agent gemini,antigravity-cli` |
-| **OpenCode** | Skills dirs *(plugins here are JS/TS modules, not skill bundles)* | — | `npx @lxy10086/oh-my-skills add --agent opencode` |
-| **Hermes** | Skills dirs (+ Skills Hub) | — | `npx @lxy10086/oh-my-skills add --agent hermes` |
-| **WorkBuddy** | Skills dirs | — | `npx @lxy10086/oh-my-skills add --agent workbuddy` |
-| **Pi** | Skills dirs | — | `npx @lxy10086/oh-my-skills add --agent pi` |
-| **Cursor / Copilot / Roo / Windsurf** | Skills dirs | — | `npx @lxy10086/oh-my-skills add --agent cursor,copilot,…` |
+| Host                                        | Mechanism                                                          | Manifest in this repo                                               | How to install as plugin                                                                                  |
+| ------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Claude Code**                       | Plugin + marketplace                                               | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | `/plugin marketplace add xiaoMing022/oh-my-skill` then `/plugin install oh-my-skills@oh-my-skills`    |
+| **Codex**                             | Plugin + marketplace                                               | `.codex-plugin/plugin.json`, `.agents/plugins/marketplace.json` | `codex plugin marketplace add xiaoMing022/oh-my-skill` then `/plugins` (or install `oh-my-skills`)  |
+| **Grok Build**                        | Plugin + marketplace                                               | `.grok-plugin/marketplace.json`                                   | `grok plugin marketplace add xiaoMing022/oh-my-skill` then `grok plugin install oh-my-skills --trust` |
+| **Gemini / Antigravity**              | Plugin package                                                     | root`plugin.json` (`$schema` = Antigravity)                     | `npx @lxy10086/oh-my-skills add --agent gemini,antigravity-cli`                                         |
+| **OpenCode**                          | Skills dirs*(plugins here are JS/TS modules, not skill bundles)* | —                                                                  | `npx @lxy10086/oh-my-skills add --agent opencode`                                                       |
+| **Hermes**                            | Skills dirs (+ Skills Hub)                                         | —                                                                  | `npx @lxy10086/oh-my-skills add --agent hermes`                                                         |
+| **WorkBuddy**                         | Skills dirs                                                        | —                                                                  | `npx @lxy10086/oh-my-skills add --agent workbuddy`                                                      |
+| **Pi**                                | Skills dirs                                                        | —                                                                  | `npx @lxy10086/oh-my-skills add --agent pi`                                                             |
+| **Cursor / Copilot / Roo / Windsurf** | Skills dirs                                                        | —                                                                  | `npx @lxy10086/oh-my-skills add --agent cursor,copilot,…`                                              |
 
 ```bash
 # Universal skills path (works across most hosts that read Agent Skills)
@@ -160,6 +183,9 @@ oh-my-skills/
 ├── bin/cli.js                  # npx @lxy10086/oh-my-skills
 └── skills/
     ├── visual-brainstorm/
+    ├── figure-out/
+    ├── code-chain/
+    ├── my-designer/
     ├── html-prototype/
     └── design-unify/
 ```

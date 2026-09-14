@@ -1,0 +1,60 @@
+{
+  "skill_name": "visual-brainstorm",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "为一个桌面客服工单系统确定视觉方向，核心是高频筛选与分派，要兼顾窄屏。不要现在实现产品。",
+      "scripted_replies": [
+        "选你推荐的方案，继续下一个关键节点。",
+        "两个都不太好，想保留 A 的信息量和 B 的留白。",
+        "先暂停，之后接着做。"
+      ],
+      "expected_output": "A bounded decision plan, actual preview revisions, a confirmed first decision, an unconfirmed hybrid at the next checkpoint, and a paused session with a recoverable pending question.",
+      "files": [],
+      "assertions": [
+        "Presents an ordered plan covering multiple relevant decisions before or alongside the first preview.",
+        "After the first scripted selection, records its evidence and presents the next unresolved visual checkpoint.",
+        "Keeps a stable session/URL across revisions and preserves earlier source revisions.",
+        "Treats the requested hybrid as an unconfirmed candidate, not a completed decision.",
+        "On pause, saves current checkpoint, pending question, confirmed decisions, and next action without claiming completion."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "html-prototype 调用方只需要确认侧栏导航 A / 顶栏导航 B 这一处分叉，其他视觉决定均已确认。用户回复：选 A，按这个继续做原型。",
+      "expected_output": "A scoped handoff containing the selected navigation and available evidence, with no unnecessary extra visual checkpoints or repeated build-authorization question. Evaluation ends at the proposed handoff; do not build a product during the test.",
+      "files": [],
+      "assertions": [
+        "Resolves only the delegated navigation fork and returns to the authorized prototype work without imposing a full-session review."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "继续之前的页面视觉讨论。布局 D1 选了侧栏，密度 D2 依赖 D1；品牌配色 D3 已确认且与导航无关。现在改成顶栏，但保留品牌配色。",
+      "expected_output": "Records the changed layout and preserves previous evidence, marks the dependent density decision for review, retains the independent confirmed palette, and shows only the next affected comparison.",
+      "files": [],
+      "assertions": [
+        "Reopens affected dependent decisions while retaining independent confirmations and decision history."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "已有完整页面视觉决策计划，目前展示 D1 的布局 A/B 并推荐 A，后续 D2 信息密度尚未确认。用户仅回复：选你推荐的方案。",
+      "expected_output": "Record the D1 selection and actually prepare the next D2 visual comparison in the same turn. No request for permission to continue the already-scoped exploration.",
+      "files": [],
+      "assertions": [
+        "Continues from a plain option selection to the next planned visual checkpoint without requiring an explicit continue request."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "会话进行中，D2 信息密度正等待选择，用户先在预览页面点选了某个选项，然后在对话里回复：就按我在页面上点的那个继续。",
+      "expected_output": "The agent reads the recorded on-page selection for the pending checkpoint from the session's choices.json, treats the chat reply as the confirmation, records the resolved option, and proceeds to the next checkpoint.",
+      "files": [],
+      "assertions": [
+        "Resolves the referenced on-page pick by reading the session's recorded selection (choices.json) for the pending checkpoint instead of guessing or re-asking which option was meant.",
+        "Does not treat a recorded page click alone (without the chat reply) as a confirmed decision."
+      ]
+    }
+  ]
+}

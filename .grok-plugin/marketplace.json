@@ -1,18 +1,21 @@
 {
   "name": "oh-my-skills",
-  "description": "Visual brainstorming, HTML prototyping, and design-unify skills",
+  "description": "Visual brainstorming, figuring out technical approaches, tracing code behavior, coherent frontend implementation, HTML prototyping, and design unification",
   "owner": {
     "name": "xiaoMing022"
   },
   "plugins": [
     {
       "name": "oh-my-skills",
-      "description": "Visual brainstorm, clickable HTML prototype, and frontend design unify",
+      "description": "Visual brainstorming, figuring out technical approaches, tracing code behavior, coherent frontend implementation, HTML prototyping, and design unification",
       "version": "0.1.5",
       "category": "productivity",
       "homepage": "https://github.com/xiaoMing022/oh-my-skill",
       "keywords": [
         "visual-brainstorm",
+        "figure-out",
+        "code-chain",
+        "my-designer",
         "html-prototype",
         "design-unify"
       ],

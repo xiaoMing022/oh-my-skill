@@ -1,0 +1,52 @@
+{
+  "skill_name": "my-designer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "给现有客服工作台增加通知设置页，延续现有样式。需要邮件和站内通知开关，以及保存后的成功提示。",
+      "setup": "A static app: index.html imports styles/system.css, which imports the active blue semantic tokens from styles/tokens.css. Existing app-nav, page, panel and button primitives are maintained. README documents the shared source; no file is named globals.css. Use a copy of the fixture app, not a live product.",
+      "expected_output": "A working notification settings page consuming the existing theme and primitives, with no new theme-choice gate or competing global palette.",
+      "files": [],
+      "assertions": [
+        "Finds the consumed stylesheet and token source without requiring a globals.css filename.",
+        "Uses established visual rules without asking the user to select a new theme.",
+        "Implements toggles and honest save feedback, and verifies relevant behavior.",
+        "Does not add runtime imports or styles from an external agent cache."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "新建一个轻量书店的图书目录管理页，主要是快速查找书名并编辑库存；桌面为主兼顾手机。我没有品牌要求，你先展示两种合适的主题让我选，再实现这一页。用原生 HTML/CSS/JS。",
+      "scripted_replies": ["选你推荐的方案，继续实现。"],
+      "expected_output": "One scoped visual theme comparison outside the project, followed by a functioning single-page UI from the selected theme. Runtime styles are project-owned and the choice is not re-confirmed.",
+      "files": [],
+      "assertions": [
+        "Shows comparable real UI samples using visual-brainstorm before committing a theme to product code.",
+        "Records the actual supplied selection and resumes the authorized implementation without another theme gate.",
+        "Maps the chosen design to project-native shared tokens and components rather than importing preview host CSS.",
+        "Implements usable search/edit behavior and checks representative wide and narrow layouts."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "继续给这个已有后台增加同风格页面。旧的项目外记录写着紫色主题，但当前维护的设计文档和实际使用的主题源码都是蓝色；没有新的改色要求。",
+      "expected_output": "Revalidates current authority, uses the maintained blue theme, marks the old cache superseded, and does not apply the stale purple palette or ask for a redundant theme decision.",
+      "files": [],
+      "assertions": ["Treats the current maintained project authority as stronger than an external stale design record."]
+    },
+    {
+      "id": 4,
+      "prompt": "这个仓库 apps/admin 使用组件库主题 Provider，apps/store 使用自己的 CSS 主题。现在仅给 admin 增加一个页面。它没有 globals.css，但已有明确的主题和共享组件。",
+      "expected_output": "Uses admin's consumed provider and primitives, keeps the store unchanged, and scopes any external record to the selected app.",
+      "files": [],
+      "assertions": ["Recognizes a provider-owned design system and respects independent application boundaries."]
+    },
+    {
+      "id": 5,
+      "prompt": "先设计这页，暂时不要修改任何项目文件。样式还没定，给我两个方向比较。",
+      "expected_output": "External visual exploration and an unresolved theme question. No product stylesheet, hidden runtime link, or implementation-complete claim.",
+      "files": [],
+      "assertions": ["Honors preview-only scope while keeping working design files outside the product."]
+    }
+  ]
+}

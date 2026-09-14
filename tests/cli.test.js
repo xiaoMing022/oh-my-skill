@@ -224,12 +224,15 @@ test('CLI help and list exit 0', () => {
   });
   assert.equal(list.status, 0);
   assert.match(list.stdout, /visual-brainstorm/);
+  assert.match(list.stdout, /figure-out/);
+  assert.match(list.stdout, /code-chain/);
   assert.match(list.stdout, /html-prototype/);
 });
 
 test('renderBanner is a large pixel wordmark', () => {
   const banner = renderBanner({ columns: 80, version: '0.1.1' });
   assert.match(banner, /PIXEL SKILLS FOR EVERY AGENT/);
+  assert.match(banner, /my-designer/);
   assert.match(banner, /█/);
   assert.ok(banner.split('\n').length >= 16);
 });
@@ -269,4 +272,3 @@ test('add --all -y prints the pixel banner and skips the picker', () => {
   assert.match(result.stdout, /visual-brainstorm/);
   fs.rmSync(home, { recursive: true, force: true });
 });
-

@@ -1,7 +1,7 @@
 {
   "name": "oh-my-skills",
   "version": "0.1.5",
-  "description": "Visual brainstorming, HTML prototyping, and design-unify skills for coding agents",
+  "description": "Visual brainstorming, figuring out technical approaches, tracing code behavior, coherent frontend implementation, HTML prototyping, and design unification",
   "author": {
     "name": "xiaoMing022",
     "url": "https://github.com/xiaoMing022"
@@ -11,6 +11,9 @@
   "license": "MIT",
   "keywords": [
     "visual-brainstorm",
+    "figure-out",
+    "code-chain",
+    "my-designer",
     "html-prototype",
     "design-unify",
     "skills"
@@ -18,7 +21,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "oh-my-skills",
-    "shortDescription": "Visual brainstorm, HTML prototype, and design unify",
-    "longDescription": "Install visual-brainstorm, html-prototype, and design-unify as Agent Skills for layout selection, clickable prototypes, and frontend style unification."
+    "shortDescription": "Visual brainstorm, figure-out, code-chain, coherent frontend UI, prototypes, and style unification",
+    "longDescription": "Install visual-brainstorm, figure-out, code-chain, my-designer, html-prototype, and design-unify for visual decisions, figuring out technical approaches, tracing code behavior, coherent frontend implementation, clickable prototypes, and style migrations."
   }
 }

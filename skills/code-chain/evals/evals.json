@@ -1,0 +1,47 @@
+{
+  "skill_name": "code-chain",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "点击保存会发生什么？不要改代码。",
+      "expected_output": "A traced save path with one Mermaid diagram, numbered hops that cite real project code, and no product file edits.",
+      "files": [],
+      "assertions": [
+        "Locates a real save/submit entry in the open project instead of inventing a handler.",
+        "Shows one Mermaid diagram whose hop numbers match the written chain.",
+        "Each hop cites existing code and says what that step changes.",
+        "Does not edit product files or propose a redesign."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "用户提交订单后，前端到后端这条请求实际怎么走？把跨服务的边界画出来。",
+      "expected_output": "A chain that follows the request across modules or processes, with network/RPC/queue hops drawn as boundaries rather than local calls.",
+      "files": [],
+      "assertions": [
+        "Traces from the client submit into the server handler using actual routes or clients in the repo.",
+        "Marks HTTP, queue, or RPC edges as process boundaries in the diagram.",
+        "Does not collapse a remote call into a local function arrow."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "这段校验逻辑会怎样？仓库里有两套 submit，一套在后台一套在公开表单。",
+      "expected_output": "Asks which entry to trace before producing a chain. Does not merge two handlers into one invented path.",
+      "files": [],
+      "assertions": [
+        "Asks one clarifying question when two entries would produce different chains.",
+        "Does not present a combined fictional call path as fact."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "登录失败之后我们应该怎么改鉴权，给我两个方案。",
+      "expected_output": "Routes the implementation-approach question to figure-out. Does not treat it as a code-chain walkthrough.",
+      "files": [],
+      "assertions": [
+        "Does not absorb a 'how should we change it' request into a code-chain explanation of current code as the whole answer."
+      ]
+    }
+  ]
+}

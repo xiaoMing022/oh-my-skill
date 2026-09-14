@@ -27,6 +27,8 @@ Reload this skill before auditing or applying unify work.
 | --- | --- |
 | Unify style across the open project | this skill |
 | Pick a new layout / tone with sketches | `visual-brainstorm` |
+| Architecture, data model, implementation approach | `figure-out` |
+| What existing code does for a click, request, or function | `code-chain` |
 | Build a distinctive new page or UI | `frontend-design` |
 | Clickable HTML prototype to save | `html-prototype` |
 

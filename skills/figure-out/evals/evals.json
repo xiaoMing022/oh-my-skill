@@ -1,0 +1,62 @@
+{
+  "skill_name": "figure-out",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "要给现有订单服务加支付回调对账。现在回调、本地订单状态、财务流水可能不一致，请先拆关键技术决策并给方案，不要直接改代码。",
+      "scripted_replies": [
+        "选你推荐的方案，继续下一个关键节点。",
+        "两个都不太好，想保留 A 的强一致和 B 的可回放。",
+        "先暂停，之后接着做。"
+      ],
+      "expected_output": "A bounded decision plan, a confirmed first approach, an unconfirmed hybrid at the next checkpoint, and a paused session with a recoverable pending question. No product code edits.",
+      "files": [],
+      "assertions": [
+        "Presents an ordered plan covering multiple relevant technical forks before or alongside the first comparison.",
+        "Each shown checkpoint includes 2-3 approaches, an explicit evaluation, and one recommendation.",
+        "After the first scripted selection, records its evidence and presents the next unresolved checkpoint in the same turn.",
+        "Treats the requested hybrid as an unconfirmed candidate, not a completed decision.",
+        "On pause, saves current checkpoint, pending question, confirmed decisions, and next action without claiming completion or entering plan mode."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "鉴权边界 T1 已确认走网关校验 + 服务内二次校验；存储模型 T2 已确认用现有 Postgres 单表扩展。用户回复：按已确认的思路做计划，然后等我批准再改代码。",
+      "expected_output": "Enters plan mode with a concrete implementation plan derived from the confirmed approaches, waits for plan approval, and does not edit product files during the test.",
+      "files": [],
+      "assertions": [
+        "Does not start product implementation before an approved plan.",
+        "The plan restates confirmed approaches and does not reopen settled forks as new architecture debates.",
+        "Uses the host plan-mode mechanism when available, otherwise writes a reviewable plan in chat and waits."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "继续之前的实现讨论。消息投递 T1 选了 outbox；消费端幂等 T2 依赖 T1；日志格式 T3 已确认且与投递无关。现在改成同步写入下游，但保留日志格式。",
+      "expected_output": "Records the changed delivery approach and preserves previous evidence, marks the dependent idempotency decision for review, retains the independent confirmed log format, and shows only the next affected comparison.",
+      "files": [],
+      "assertions": [
+        "Reopens affected dependent decisions while retaining independent confirmations and decision history."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "已有完整技术决策计划，目前展示 T1 的状态机方案 A/B 并推荐 A，后续 T2 失败补偿尚未确认。用户仅回复：选你推荐的方案。",
+      "expected_output": "Record the T1 selection and actually prepare the next T2 approach comparison in the same turn. No request for permission to continue the already-scoped exploration, and no plan mode yet.",
+      "files": [],
+      "assertions": [
+        "Continues from a plain option selection to the next planned technical checkpoint without requiring an explicit continue request.",
+        "Does not enter plan mode while later checkpoints remain unresolved."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "这是一个视觉布局问题：侧栏还是顶栏，先出两个稿给我看。顺便想想后台怎么拆模块。",
+      "expected_output": "Routes the visual fork to visual-brainstorm. Does not absorb layout comparison into this skill or start a full architecture session unless the user asks for the module-split fork specifically.",
+      "files": [],
+      "assertions": [
+        "Does not treat a visual layout comparison as a figure-out implementation checkpoint."
+      ]
+    }
+  ]
+}

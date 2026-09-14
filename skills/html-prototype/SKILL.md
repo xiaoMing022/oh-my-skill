@@ -23,6 +23,8 @@ settle — visually with `visual-brainstorm`, otherwise in chat — before
 building the full prototype.
 
 This is not `visual-brainstorm` alone (that skill only shows sketch options).
+This is not `figure-out` (architecture and implementation approach).
+This is not `code-chain` (tracing what existing code already does).
 This is not `frontend-design` (distinctive UI inside the user's project).
 Do not write into a git working tree unless the user asked to 落盘 there.
 

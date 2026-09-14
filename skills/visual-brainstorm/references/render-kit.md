@@ -11,19 +11,63 @@ Skill directory: the folder that contains `SKILL.md` (parent of `references/`).
 
 Preview is served on a **local HTTP port** so the user can interactively view and test it. Do not link or ask the user to open a raw filesystem `.html` path as the primary visual.
 
-Output directory: `~/.agent-skills/visualizations/` (create it if missing, or use `${AGENT_VISUALIZATIONS_DIR:-~/.agent-skills/visualizations}`). Never write scratch visualization files into the user's git working tree unless explicitly asked.
+Working root: `~/.agent-skills/visualizations/`, or the expanded
+`AGENT_VISUALIZATIONS_DIR` when set. Keep scratch files outside the user's git
+working tree. Use a unique directory per task, not a shared title-based file.
 
 ## HTML output contract
 
-### File
+### Session files
 
-- Choose a concise ASCII lowercase-hyphenated title.
-- Write the editable source as `~/.agent-skills/visualizations/<title>.fragment.html`.
-- Reuse the same title when updating an existing visual so the same port
-  keeps serving it.
-- Build the visual for the conversation. Read the open project only as far
-  as the current question needs matching chrome. If they asked to change
-  project files, stop and hand off to `frontend-design`.
+Create a session with the bundled helper (replace `<skill-dir>` with the
+actual skill directory; quote real paths in commands):
+
+```bash
+python3 <skill-dir>/scripts/session.py init <ascii-hyphenated-title>
+```
+
+Read the returned absolute session path and save it in conversation state.
+Use that exact directory on later turns; do not run `init` for each checkpoint.
+Keep these files there:
+
+- `session.md`: decision plan, evidence, pending question, and next actions;
+  follow `session.md` in this references directory.
+- `checkpoints.json`: tab manifest owned by the helper (checkpoint IDs, tab
+  labels, statuses). Maintain it only through `publish` and `mark`.
+- `checkpoints/<id>.fragment.html`: the current source behind each tab.
+- `draft.fragment.html`: editable candidate, never served directly.
+- `revisions/<checkpoint>-<id>.fragment.html`: source snapshots created by
+  publication.
+- `choices.json`: latest on-page selection per checkpoint, written by the
+  preview server. Preview feedback only — never confirmation evidence. Read it
+  when the user's chat reply references their on-page pick (for example
+  "就按我页面上点的"); the decision still needs that chat reply.
+- `serve.json`: temporary ownership/connection metadata, not decision history.
+
+The preview page is one fixed shell with a tab per checkpoint. Publishing a
+checkpoint updates only its own tab; every earlier checkpoint stays viewable
+on the same URL. Write the draft as a literal file, then publish it to the
+checkpoint it answers, with a short human tab label:
+
+```bash
+python3 <skill-dir>/scripts/session.py publish <session-dir> <session-dir>/draft.fragment.html \
+  --checkpoint D2 --title <short-label>
+```
+
+The helper checks UTF-8, nonempty fragment format, size, and renderability,
+then saves a revision and atomically replaces that checkpoint's fragment. These
+checks do not prove that layout or JavaScript works; inspect the result too.
+Record the returned revision in `session.md` before asking for a selection.
+A publication sets the tab status to `waiting` unless `--status` overrides it.
+When the user confirms or defers a decision, sync the tab badge:
+
+```bash
+python3 <skill-dir>/scripts/session.py mark <session-dir> D2 confirmed
+```
+
+To revisit an older revision, publish that snapshot to its checkpoint again and
+record the reason. Never edit saved revisions in place. One agent writes a
+session at a time; independent conversations use separate sessions.
 
 ### Fragment
 
@@ -49,32 +93,73 @@ Output directory: `~/.agent-skills/visualizations/` (create it if missing, or us
   paragraphs, formulas, instructions, or narrative callouts. Include only
   necessary labels, legends, values, and accessible text alternatives.
 - Serve on a local port. Never treat a saved `.html` file as the preview.
+  The server serves the whole session directory: a fixed page with a tab bar
+  (checkpoint ID, label, status badge) and one sandboxed frame per checkpoint,
+  loaded on demand from `/checkpoint/<id>`. The page polls `/__version` and
+  syncs incrementally — a new checkpoint's tab appears and activates, a
+  republished checkpoint reloads only its own frame, and status badges update
+  in place — without a full page reload, so the user's state in other tabs is
+  preserved. On-page option clicks are recorded to `choices.json` via
+  `/__choice` as preview feedback. Never restart the server per checkpoint.
 
-  Info file: `~/.agent-skills/visualizations/<title>.serve.json`
-
-  If that file exists and its `pid` is still alive, only rewrite the fragment
-  (the running server re-reads it on each request). Ask the user to refresh
-  the same URL.
-
-  Otherwise start the server in the background and keep it running across
-  turns:
+  Check an existing server by identity, not just PID existence:
 
   ```bash
-  python3 <skill-dir>/scripts/render.py \
-    ~/.agent-skills/visualizations/<title>.fragment.html \
-    --serve \
-    --info ~/.agent-skills/visualizations/<title>.serve.json
+  python3 <skill-dir>/scripts/render.py <session-dir> \
+    --status --info <session-dir>/serve.json
   ```
 
-  Read the printed URL (and the info JSON). On first start only, open the URL
-  (`open "$URL"`), not a file path. The served page is the deliverable; respond
-  with that `http://127.0.0.1:<port>/` URL once it is up.
+  A successful check means this port belongs to this session and instance.
+  Reuse its URL; an open page syncs itself after publication. Metadata from
+  older skill versions without an identity token is not reusable. Never kill a
+  PID read from JSON.
+
+  If no info file exists, start with the host's background-process mechanism
+  so the process can remain alive across turns (this command stays running):
+
+  ```bash
+  python3 <skill-dir>/scripts/render.py <session-dir> \
+    --serve --info <session-dir>/serve.json --title <task-title>
+  ```
+
+  If startup is still in progress, allow it to finish before checking again.
+  If an existing info file fails identity verification, retry once after a
+  short delay. Preserve it under a unique `serve.stale-<id>.json` name before
+  restarting. If another agent/process owns an active startup, do not rename
+  its metadata or start another server. Never overwrite another session's files.
+  For legacy processes without identity metadata, use only a known host process
+  handle to stop them; otherwise leave them alone and create a new session.
+
+  Read the printed URL, verify `--status` and an HTTP GET of the preview before
+  sharing it. Check that the active tab's checkpoint and revision match the
+  pending question. On first start, open the URL with an available browser
+  mechanism; on subsequent turns the same open page auto-refreshes. If no
+  browser inspection tool is available, report that limitation. Check the primary interaction and target
+  and narrow layouts when browser tools are available. Never claim the user
+  can access a port based only on having written a file.
+
+  A server exits after 30 minutes without a successful preview GET (configurable
+  with positive `--idle-timeout` seconds). Status and `/__version` probes do not
+  extend its life; an expired page shows a stopped-preview notice. Reopen the
+  same session after expiry; record the new URL. For explicit stop:
+
+  ```bash
+  python3 <skill-dir>/scripts/render.py <session-dir> \
+    --stop --info <session-dir>/serve.json
+  ```
+
+  Stop verifies an instance token and never signals an arbitrary PID. Wait for
+  the managed process to exit or its owned info file to disappear. Normal stop,
+  idle expiry, SIGINT, and SIGTERM release the socket and owned metadata. A hard
+  crash may leave stale metadata; use the recovery procedure above. Keep source
+  and decision files on stop. Do not accumulate one server per checkpoint.
 - Widen only when several compact option or chart panels must remain side by
   side for direct comparison. Never widen a single plot, map, grid, diagram,
   timeline, or full-size mockup; stack them vertically instead.
-- Final user-facing message: the preview URL, what to compare or notice, and
-  a question so the user can choose. Do not dump a Markdown table or repeat
-  the visual's data. Do not hand the user a raw file path.
+- When awaiting a visual decision, include the preview URL, what to compare,
+  and one choice question. Pause, completion, handoff, and plain explainers do
+  not require another choice question. Do not dump a Markdown table or repeat
+  the visual's data. Do not use a raw file path as the live preview.
 
 ### External resources
 
@@ -90,12 +175,20 @@ Output directory: `~/.agent-skills/visualizations/` (create it if missing, or us
 
   ```bash
   python3 <skill-dir>/scripts/render.py \
-    ~/.agent-skills/visualizations/<title>.fragment.html \
+    <session-dir>/checkpoints/<checkpoint-id>.fragment.html \
     <destination>.html
   ```
 
-- Apply this export flow only when they ask to turn the existing preview into
-  a file or website. For a general website request, build a new responsive
+  Passing the session directory instead of one fragment exports the whole
+  tabbed document. Exports are offline self-contained snapshots: every
+  checkpoint is inlined and no live polling or choice reporting is included.
+
+- Exports cannot replace the source. Existing destinations require an intended
+  replacement with `--force`; otherwise choose a new path. Rendering embeds the
+  source and base CSS, but optional CDN libraries still need network access; do
+  not promise offline functionality without checking it.
+- Apply this export flow only when they ask to save the existing preview as
+  a file. For a general website request, build a new responsive
   site in the open project without this skill's guidance.
 
 ## Composition
@@ -106,8 +199,10 @@ Choose the smallest composition that fits.
   or long stacks. Add only requested controls, use one mechanism per state, and
   never invent search, filter, or reset controls.
 - Keep filters, selections, and other presentation-only interactions local.
-  Do not add buttons that send messages back to the agent; this host has no
-  callback. If a selected value needs investigation, the user will ask in chat.
+  Do not add custom buttons that message the agent; the only reporting channel
+  is the built-in `data-choice` recording to `choices.json`, and it is preview
+  feedback, not a request. If a selected value needs investigation, the user
+  will ask in chat.
 - Show only metrics that explain the requested behavior. Put live values in
   control headers or on the visual before cards. Treat maxima as ceilings, not
   targets. Never invent qualitative scores, status cards, or secondary fact
@@ -121,12 +216,14 @@ are in `SKILL.md`.
 - Label options A/B/C (or short names). Stay at **reference fidelity**:
   layout, hierarchy, key regions, representative copy, and a hint of tone.
   Grey or labeled blocks are enough for secondary areas. Do not design every
-  control, empty state, icon, or dashboard widget. Do not invent a complete
-  design system. Raise fidelity only after they pick an option and ask to
-  refine it.
-- Make each option selectable (`button` or a clickable surface with
-  `data-choice` and `aria-pressed`). Selection is local visual feedback only;
-  the user confirms in chat. The host injects a confirm-in-chat hint when
+  control, empty state, icon, or dashboard widget; depict a critical state when
+  that state is the current planned decision. Do not invent a complete
+  design system. Raise fidelity only enough to answer a planned refinement
+  or integrated review.
+- Make each option selectable (a native labeled `button` with
+  `data-choice` and `aria-pressed`). A selection gives local visual feedback
+  and is recorded to the session's `choices.json` as preview feedback; the
+  user still confirms in chat. The host injects a confirm-in-chat hint when
   `[data-choice]` is present; do not duplicate that hint in the fragment.
 - The visualization is the preview, not a widget inside the depicted product.
 - Use product and platform context already in the conversation. Read the
