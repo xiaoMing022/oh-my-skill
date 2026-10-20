@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "oh-my-skills",
-  "description": "Visual brainstorming, figuring out technical approaches, tracing code behavior, coherent frontend implementation, HTML prototyping, and design unification",
+  "description": "Brainstorming, visualization, interaction design for Web and clients, tracing code behavior, and writing concise process docs grounded in source code",
   "owner": {
     "name": "xiaoMing022"
   },
@@ -9,7 +9,7 @@
     {
       "name": "oh-my-skills",
       "source": ".",
-      "description": "Visual brainstorming, figuring out technical approaches, tracing code behavior, coherent frontend implementation, HTML prototyping, and design unification",
+      "description": "Brainstorming, visualization, interaction design for Web and clients, tracing code behavior, and writing concise process docs grounded in source code",
       "version": "0.1.5",
       "category": "productivity"
     }

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>{{CHECKPOINT_ID}} · {{SESSION_TITLE}}</title>
+<style>
+:root{color-scheme:light dark}
+body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:light-dark(#fff,#181818);color:light-dark(#1a1c1f,#fff)}
+.vz-top{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem;
+  padding:.55rem .9rem;border-bottom:1px solid light-dark(rgb(0 0 0/.12),rgb(255 255 255/.16))}
+/* TEXT-MARK placeholder — swap this span for an <img> logo later; keep dimensions */
+.vz-brand{font-weight:700;letter-spacing:.06em}
+.vz-meta{font-size:12px;opacity:.65}
+.vz-main{max-width:1100px;margin:0 auto;padding:1rem .9rem 2rem}
+.vz-foot{max-width:1100px;margin:0 auto;padding:.7rem .9rem 1.2rem;font-size:12px;opacity:.65}
+.vz-nav{display:flex;flex-wrap:wrap;gap:.4rem;list-style:none;margin:0 0 1rem;padding:0}
+.vz-nav a{display:inline-block;padding:.25rem .7rem;border:1px solid light-dark(rgb(0 0 0/.16),rgb(255 255 255/.22));border-radius:999px;text-decoration:none;color:inherit;font-size:12px}
+.vz-nav a[aria-current="page"]{font-weight:700;border-width:2px}
+.vz-pill{font-size:11px;opacity:.7;margin-left:.35em}
+{{KIT_CSS}}
+</style>
+</head>
+<body>
+<header class="vz-top">
+  <span class="vz-brand">◼ OH-MY SKILLS</span><!-- LOGO SLOT -->
+  <span class="vz-meta">{{SESSION_TITLE}} · {{CHECKPOINT_ID}} {{REVISION}} · {{STATUS}}</span>
+</header>
+<main class="vz-main">{{BODY}}</main>
+<footer class="vz-foot">本地预览 · 请在对话里回复确认（例如“选 A”）；页面点击仅为示意，不算确认。</footer>
+</body>
+</html>

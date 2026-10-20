@@ -1,7 +1,7 @@
 {
   "name": "oh-my-skills",
   "version": "0.1.5",
-  "description": "Visual brainstorming, figuring out technical approaches, tracing code behavior, coherent frontend implementation, HTML prototyping, and design unification",
+  "description": "Brainstorming, visualization, interaction design for Web and clients, tracing code behavior, and writing concise process docs grounded in source code",
   "author": {
     "name": "xiaoMing022",
     "url": "https://github.com/xiaoMing022"
@@ -10,18 +10,17 @@
   "repository": "https://github.com/xiaoMing022/oh-my-skill",
   "license": "MIT",
   "keywords": [
-    "visual-brainstorm",
-    "figure-out",
+    "visualization",
+    "brainstorming",
     "code-chain",
-    "my-designer",
-    "html-prototype",
-    "design-unify",
-    "skills"
+    "designer",
+    "skills",
+    "process-docs"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "oh-my-skills",
-    "shortDescription": "Visual brainstorm, figure-out, code-chain, coherent frontend UI, prototypes, and style unification",
-    "longDescription": "Install visual-brainstorm, figure-out, code-chain, my-designer, html-prototype, and design-unify for visual decisions, figuring out technical approaches, tracing code behavior, coherent frontend implementation, clickable prototypes, and style migrations."
+    "shortDescription": "Brainstorming, visualization, design, code tracing, and process docs",
+    "longDescription": "Install brainstorming, visualization, designer, code-chain, and process-docs for intent discovery, visual decisions, interaction design, code tracing, and source-grounded workflow documentation."
   }
 }

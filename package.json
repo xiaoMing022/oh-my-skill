@@ -1,7 +1,7 @@
 {
   "name": "@lxy10086/oh-my-skills",
-  "version": "0.1.5",
-  "description": "Cross-agent skills (visual-brainstorm, figure-out, code-chain, my-designer, html-prototype, design-unify) with an installer CLI for Codex, OpenCode, Hermes, WorkBuddy, Pi, and more",
+  "version": "0.1.6",
+  "description": "Cross-agent skills (brainstorming, visualization, designer, code-chain, process-docs) with an installer CLI for Codex, OpenCode, Hermes, WorkBuddy, Pi, and more",
   "type": "module",
   "main": "bin/lib.js",
   "bin": {
@@ -37,12 +37,11 @@
     "workbuddy",
     "pi",
     "grok",
-    "visual-brainstorm",
-    "figure-out",
+    "visualization",
+    "brainstorming",
     "code-chain",
-    "my-designer",
-    "html-prototype",
-    "design-unify"
+    "designer",
+    "process-docs"
   ],
   "author": "xiaoMing022",
   "license": "MIT",

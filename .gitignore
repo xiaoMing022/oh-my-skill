@@ -5,3 +5,12 @@ __pycache__/
 node_modules/
 npm-debug.log*
 .npm-pack/
+# oh-my-skills converged working dir: keep specs/previews committable,
+# ignore ephemeral serve metadata + local-only session/context caches
+.oh-my-skills/**/serve.json
+.oh-my-skills/**/serve.stale-*.json
+.oh-my-skills/brainstorming/sessions/
+.oh-my-skills/designer/contexts/
+# legacy preview dir (pre-convergence)
+.visualization/**/serve.json
+.visualization/**/serve.stale-*.json

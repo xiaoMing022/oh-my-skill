@@ -683,7 +683,7 @@ export function cmdUpdate(ctx, names, flags) {
 
 export function cmdInfo(ctx, skillName) {
   if (!skillName) {
-    ctx.log(`${c.red}Please specify a skill name. Example: oh-my-skills info visual-brainstorm${c.reset}`);
+    ctx.log(`${c.red}Please specify a skill name. Example: oh-my-skills info visualization${c.reset}`);
     return 1;
   }
   const skillMdPath = path.join(ctx.skillsDir, skillName, 'SKILL.md');
@@ -772,9 +772,9 @@ ${c.bold}EXAMPLES${c.reset}
   $ npx @lxy10086/oh-my-skills add
   $ npx @lxy10086/oh-my-skills add --all -y
   $ npx @lxy10086/oh-my-skills add --all --agent codex,opencode,hermes,workbuddy,pi
-  $ npx @lxy10086/oh-my-skills add visual-brainstorm --agent grok,claude
-  $ npx @lxy10086/oh-my-skills add html-prototype --project
-  $ npx @lxy10086/oh-my-skills remove visual-brainstorm --agent cursor
+  $ npx @lxy10086/oh-my-skills add visualization --agent grok,claude
+  $ npx @lxy10086/oh-my-skills add designer --project
+  $ npx @lxy10086/oh-my-skills remove visualization --agent cursor
   $ npx @lxy10086/oh-my-skills update
 `);
 }

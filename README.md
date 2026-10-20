@@ -1,38 +1,42 @@
 # oh-my-skills
 
-Cross-agent skills for **visual brainstorming**, **figure-out**, **code-chain**, **coherent frontend design**, **clickable HTML prototypes**, and **design unify**.
+Cross-agent skills for **brainstorming**, **visualization**, **designer**, **code-chain**, and **process-docs**.
 
 First-class install targets include **Codex**, **OpenCode**, **Hermes**, **WorkBuddy**, and **Pi**, plus Grok, Claude Code, Cursor, Gemini / Antigravity, Copilot, Roo, Windsurf, and any agent that reads Agent Skills (`SKILL.md`).
 
 | Skill                                         | What it does                                                                                      |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| [visual-brainstorm](skills/visual-brainstorm/) | Plan visual decisions, compare options, confirm across rounds, and retain resumable previews; also charts, maps, and labs |
-| [figure-out](skills/figure-out/) | Figure out hard technical tasks: compare implementation approaches, evaluate and recommend, then plan and execute after confirmation |
-| [code-chain](skills/code-chain/) | Trace what existing code does for a click, request, or function; cite key hops and show the path in Mermaid |
-| [my-designer](skills/my-designer/) | Build pages and components from one project design system; confirm missing themes visually, then implement consistently |
-| [html-prototype](skills/html-prototype/)       | PRD / Feishu doc / screenshot → clickable HTML prototype, preview, optional export               |
-| [design-unify](skills/design-unify/)           | Inventory the project's UI stack, confirm a baseline, plan if large, then unify styles            |
+| [visualization](skills/visualization/) | Plan visual decisions, compare options, confirm across rounds, and retain resumable previews; also charts, maps, and labs |
+| [brainstorming](skills/brainstorming/) | Brainstorm before creative work: uncover goals with one-question-at-a-time conversation, play back, size, write a design doc with approval gate |
+| [code-chain](skills/code-chain/) | Trace what existing code does; cite meaningful phases and data, with Mermaid when useful or requested |
+| [process-docs](skills/process-docs/) | Turn source code into concise Chinese workflow and prompt references for APIs, triggers, outcomes, and failure paths |
+| [designer](skills/designer/) | Design and build interaction UI for Web and mobile/mini-program/desktop clients in one design language; contract + native tokens; a subject-specific theme fork when the baseline is missing, not a generic template |
 
 Requires **Node.js 18+** to install. Preview servers need **python3**.
 
-`my-designer` reuses the app's active theme and shared components. If no
-usable design baseline exists, it uses `visual-brainstorm` for one theme choice
-before implementation. Experiment files and optional working design records
-stay outside the repo; production styles remain in the app's native theme
-source so builds do not depend on an agent's local cache. Broad style migrations
-remain the responsibility of `design-unify`.
+`designer` reuses each client's active theme and shared components under one
+design language with per-client adaptation (Web, mobile, mini-program,
+desktop). If no usable design baseline exists, it uses `visualization`
+for one theme choice before implementation. A new direction comes from the
+subject's audience and job, with task-appropriate hierarchy and expressive
+emphasis when useful. Decisions live in a short
+design contract that points to runtime sources; production styles remain
+in each client's native theme source so builds do not depend on an
+agent's local cache. An external `design.md` working record is only used
+when the project has no design-doc home. Broad rebrands are handled by
+`designer` itself within the authorized scope.
 
-`figure-out` is for 理清思路: the architecture counterpart of
-`visual-brainstorm`. It splits hard technical work into decision
-checkpoints, compares approaches, then enters plan mode and executes
-only after confirmation. Decision records stay outside the repo.
+`brainstorming` is for 头脑风暴: uncover what to build and why before
+anything gets built, in software or out of it. When intent is settled,
+decide the remaining technical approach inline in plan mode and hand UI
+work to `designer` with the approved direction.
 
 `code-chain` traces a named behavior through the open project: real
-entry, numbered hops with citations, and one Mermaid diagram. It explains
-what already happens; it does not choose a new design.
+entry, cited steps sized to the question, and Mermaid when useful or requested. It explains
+what already happens; it does not choose a new design. UI changes traced
+this way hand off to `designer` with the traced path.
 
-The name `my-designer` avoids colliding with generic frontend skills installed by
-other packages.
+`process-docs` turns real code into concise Chinese workflow and prompt references, with API inputs and responses, trigger rules, visible copy, and failure behavior.
 
 
 ---
@@ -51,13 +55,13 @@ npx @lxy10086/oh-my-skills add
 npx @lxy10086/oh-my-skills add --all -y
 
 # One skill, selected agents
-npx @lxy10086/oh-my-skills add visual-brainstorm --agent grok,claude,cursor
+npx @lxy10086/oh-my-skills add visualization --agent grok,claude,cursor
 
 # Codex / OpenCode / Hermes / WorkBuddy / Pi
 npx @lxy10086/oh-my-skills add --all --agent codex,opencode,hermes,workbuddy,pi
 
 # Copy into the current project (committed with the repo)
-npx @lxy10086/oh-my-skills add html-prototype --project
+npx @lxy10086/oh-my-skills add designer --project
 ```
 
 In a real terminal, `add` without `--agent` prints a pixel banner, then a checkbox list. Detected agents are pre-checked. Space toggles, arrow keys move, `a` selects all, Enter confirms. Pass `-y` or `--agent` to skip the picker (CI / scripts).
@@ -67,7 +71,7 @@ In a real terminal, `add` without `--agent` prints a pixel banner, then a checkb
 The repo layout is `skills/<name>/SKILL.md`, so the ecosystem installer works too:
 
 ```bash
-npx skills add xiaoMing022/oh-my-skill --skill visual-brainstorm -g
+npx skills add xiaoMing022/oh-my-skill --skill visualization -g
 npx skills add xiaoMing022/oh-my-skill --all -g
 ```
 
@@ -93,7 +97,7 @@ npx @lxy10086/oh-my-skills add              # interactive picker
 npx @lxy10086/oh-my-skills add <name...> [--all] [--agent <ids>] [--project] [-y]
 npx @lxy10086/oh-my-skills remove <name...> [--all] [--agent <ids>]
 npx @lxy10086/oh-my-skills update
-npx @lxy10086/oh-my-skills info visual-brainstorm
+npx @lxy10086/oh-my-skills info visualization
 npx @lxy10086/oh-my-skills doctor
 ```
 
@@ -113,7 +117,7 @@ Global installs copy skills into `~/.local/share/oh-my-skills`, then symlink fro
 ### Uninstall
 
 ```bash
-npx @lxy10086/oh-my-skills remove visual-brainstorm
+npx @lxy10086/oh-my-skills remove visualization
 npx @lxy10086/oh-my-skills remove --all --agent cursor
 ```
 
@@ -182,10 +186,33 @@ oh-my-skills/
 ├── .grok-plugin/               # Grok marketplace
 ├── bin/cli.js                  # npx @lxy10086/oh-my-skills
 └── skills/
-    ├── visual-brainstorm/
-    ├── figure-out/
+    ├── visualization/
+    ├── brainstorming/
     ├── code-chain/
-    ├── my-designer/
-    ├── html-prototype/
-    └── design-unify/
+    ├── designer/
+    ├── process-docs/
+    ├── outputs.md              # working files vs project deliverables
+    └── handoff.md              # shared six-field handoff contract
 ```
+
+Skill working files default to `<project>/.oh-my-skills/` — see
+[`skills/outputs.md`](skills/outputs.md) for all five skills. Product code and
+requested documentation use the project's normal source/doc locations within
+the authorized task. Small corrections and chat explanations need no new session.
+Design specs and visualization previews are committable; session state, fallback
+contexts, and server metadata should stay local. Check the target project's
+ignore rules; this checkout's rules do not configure installed projects.
+`OH_MY_SKILLS_DIR` changes the working root; legacy `AGENT_*` overrides retain
+precedence for their corresponding skill. Neither moves runtime source or docs.
+
+[`skills/handoff.md`](skills/handoff.md) defines the shared six-field handoff:
+scope, confirmed decisions, delegated choices, pending questions/assumptions,
+evidence, and next action. Each skill embeds the compact format so an individual
+installation is self-contained. Reuse current evidence and existing sessions,
+recheck changed sources, and carry forward the user's authorization.
+
+`designer` chooses a workflow for local fixes, page additions, new baselines,
+staged migrations, or additional clients; platform and migration guidance loads
+only when needed. `code-chain` sizes the explanation to the actual behavior,
+uses diagrams when useful/requested, and distinguishes async/configuration paths
+from directly evidenced calls.

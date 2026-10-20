@@ -1,7 +1,9 @@
 # Mermaid for a code chain
 
-Read before drawing. One diagram for the whole named behavior. Extra
-diagrams only when a single branch is too dense to share the main figure.
+Read before drawing. Draw the main diagram **after** the hop list, as its
+visual index. The main diagram is the **shared spine**. Extra diagrams only
+when a branch changes the outcome enough that one figure cannot show it (for
+example `--link` vs copy, or a second process).
 
 ## Pick a diagram
 
@@ -13,16 +15,27 @@ diagrams only when a single branch is too dense to share the main figure.
 
 Prefer `sequenceDiagram` when the question is “who calls whom”. Prefer
 `flowchart TD` when the question is “which branch runs”. Do not mix both
-for the same hop list.
+**inside one figure**. A second figure may use the other type if the
+asked branch is a decision the spine did not show.
 
 ## Make hops match the list
 
-Number participants or nodes like the Chain section: `1 Entry`, `2
-Validate`, `3 Persist`. A reader should map a box in the figure to the
-same numbered hop and citation.
+Every main-chain node or numbered message reuses the hop's exact stage name
+and number: `1 点击保存`, `2 提交请求`. In a flowchart, number phase nodes like
+the numbered chain section. In a sequence diagram, participants are stable actors;
+number the relevant messages/notes to match the list. Do not invent a
+participant for every step performed by the same actor.
 
-Keep labels short. Put the explanation in the hop list, not inside the
-node.
+Delete any node that has no matching numbered hop. Branches stay out of the
+numbered spine: show them as labeled edges or a separate figure, never as
+extra phase numbers.
+
+Keep labels to the stage name. Put data flow and explanation in the hop list,
+not inside the node. Optional edge labels may name a flag or payload
+(`"--link"`, `"argv"`); they are not a second hop list.
+
+Wrappers that funnel into the same spine can be a single entry node with
+a Branch note, not three numbered hops.
 
 ## Stay renderable
 
@@ -36,9 +49,14 @@ node.
 
 Cross-process hops are explicit boundaries (`participant api` then
 `participant worker`), not a local arrow that hides the network.
+Label network, queue, event, and timer edges with their actual transport or
+trigger. Distinguish an async send from its later consumer and a reply from a
+new event. Use only syntax supported by the host renderer. Put unknown external
+work beyond a labeled boundary; do not draw an invented downstream chain.
 
 ## Size
 
-Aim for the hops you listed, not the entire module graph. Five to twelve
-nodes is enough for most questions. If the chain is one function with no
-callees, still draw a tiny flowchart so the entry and return are visible.
+A multi-module overview usually has **5–8 phases**. That is guidance, not a node
+quota; actor count in a sequence diagram can differ from phase count. A simple
+function needs no diagram unless requested; if requested, draw its actual small
+path. Split a dense branch into a separate figure only when it aids the answer.

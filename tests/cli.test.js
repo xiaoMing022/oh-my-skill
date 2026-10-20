@@ -35,9 +35,9 @@ function collectLog() {
 }
 
 test('parseArgs maps -a to --agent, not --all', () => {
-  const parsed = parseArgs(['node', 'cli.js', 'add', 'visual-brainstorm', '-a', 'grok,claude', '--all']);
+  const parsed = parseArgs(['node', 'cli.js', 'add', 'visualization', '-a', 'grok,claude', '--all']);
   assert.equal(parsed.command, 'add');
-  assert.deepEqual(parsed.rest, ['visual-brainstorm']);
+  assert.deepEqual(parsed.rest, ['visualization']);
   assert.equal(parsed.flags.all, true);
   assert.deepEqual(parsed.flags.agents, ['grok', 'claude']);
 });
@@ -47,10 +47,10 @@ test('parseArgs rejects unknown flags', () => {
 });
 
 test('parseFrontmatter reads folded descriptions', () => {
-  const content = fs.readFileSync(path.join(PKG_ROOT, 'skills', 'visual-brainstorm', 'SKILL.md'), 'utf8');
+  const content = fs.readFileSync(path.join(PKG_ROOT, 'skills', 'visualization', 'SKILL.md'), 'utf8');
   const fm = parseFrontmatter(content);
-  assert.equal(fm.name, 'visual-brainstorm');
-  assert.match(fm.description, /Visual brainstorming/);
+  assert.equal(fm.name, 'visualization');
+  assert.match(fm.description, /Show instead of tell/);
   assert.doesNotMatch(fm.description, /\n/);
 });
 
@@ -124,15 +124,15 @@ test('add installs into codex, opencode, hermes, workbuddy, and pi', async () =>
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
   const code = await run([
-    'node', 'cli.js', 'add', 'design-unify',
+    'node', 'cli.js', 'add', 'designer',
     '--agent', 'codex,opencode,hermes,workbuddy,pi',
   ], ctx);
   assert.equal(code, 0);
-  assert.equal(fs.existsSync(path.join(home, '.codex', 'skills', 'design-unify', 'SKILL.md')), true);
-  assert.equal(fs.existsSync(path.join(home, '.config', 'opencode', 'skills', 'design-unify', 'SKILL.md')), true);
-  assert.equal(fs.existsSync(path.join(home, '.hermes', 'skills', 'design-unify', 'SKILL.md')), true);
-  assert.equal(fs.existsSync(path.join(home, '.workbuddy', 'skills', 'design-unify', 'SKILL.md')), true);
-  assert.equal(fs.existsSync(path.join(home, '.pi', 'agent', 'skills', 'design-unify', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.codex', 'skills', 'designer', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.config', 'opencode', 'skills', 'designer', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.hermes', 'skills', 'designer', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.workbuddy', 'skills', 'designer', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.pi', 'agent', 'skills', 'designer', 'SKILL.md')), true);
   fs.rmSync(home, { recursive: true, force: true });
 });
 
@@ -141,12 +141,12 @@ test('add copies into store then symlinks agent dirs', async () => {
   fs.mkdirSync(path.join(home, '.grok'));
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
-  const code = await run(['node', 'cli.js', 'add', 'visual-brainstorm', '--agent', 'grok,agents'], ctx);
+  const code = await run(['node', 'cli.js', 'add', 'visualization', '--agent', 'grok,agents'], ctx);
   assert.equal(code, 0);
 
-  const stored = path.join(storeDir(home), 'skills', 'visual-brainstorm', 'SKILL.md');
-  const grokLink = path.join(home, '.grok', 'skills', 'visual-brainstorm');
-  const agentsLink = path.join(home, '.agents', 'skills', 'visual-brainstorm');
+  const stored = path.join(storeDir(home), 'skills', 'visualization', 'SKILL.md');
+  const grokLink = path.join(home, '.grok', 'skills', 'visualization');
+  const agentsLink = path.join(home, '.agents', 'skills', 'visualization');
   assert.equal(fs.existsSync(stored), true);
   assert.equal(fs.lstatSync(grokLink).isSymbolicLink(), true);
   assert.equal(fs.realpathSync(grokLink), fs.realpathSync(path.dirname(stored)));
@@ -154,7 +154,7 @@ test('add copies into store then symlinks agent dirs', async () => {
   assert.equal(isManagedPath(grokLink, ctx), true);
 
   const meta = JSON.parse(fs.readFileSync(path.join(storeDir(home), 'install.json'), 'utf8'));
-  assert.deepEqual(meta.installed, ['visual-brainstorm']);
+  assert.deepEqual(meta.installed, ['visualization']);
 
   fs.rmSync(home, { recursive: true, force: true });
 });
@@ -165,12 +165,12 @@ test('remove --agent keeps the store when other agents may still use it', async 
   fs.mkdirSync(path.join(home, '.cursor'));
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
-  await run(['node', 'cli.js', 'add', 'visual-brainstorm', '--agent', 'grok,cursor'], ctx);
-  const code = await run(['node', 'cli.js', 'remove', 'visual-brainstorm', '--agent', 'cursor'], ctx);
+  await run(['node', 'cli.js', 'add', 'visualization', '--agent', 'grok,cursor'], ctx);
+  const code = await run(['node', 'cli.js', 'remove', 'visualization', '--agent', 'cursor'], ctx);
   assert.equal(code, 0);
-  assert.equal(fs.existsSync(path.join(home, '.cursor', 'skills', 'visual-brainstorm')), false);
-  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'visual-brainstorm')), true);
-  assert.equal(fs.existsSync(path.join(storeDir(home), 'skills', 'visual-brainstorm', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.cursor', 'skills', 'visualization')), false);
+  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'visualization')), true);
+  assert.equal(fs.existsSync(path.join(storeDir(home), 'skills', 'visualization', 'SKILL.md')), true);
   fs.rmSync(home, { recursive: true, force: true });
 });
 
@@ -179,9 +179,9 @@ test('--project copies instead of symlinking', async () => {
   const project = fs.mkdtempSync(path.join(os.tmpdir(), 'oms-proj-'));
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: project, log });
-  const code = await run(['node', 'cli.js', 'add', 'html-prototype', '--project', '--agent', 'agents'], ctx);
+  const code = await run(['node', 'cli.js', 'add', 'designer', '--project', '--agent', 'agents'], ctx);
   assert.equal(code, 0);
-  const dest = path.join(project, '.agents', 'skills', 'html-prototype');
+  const dest = path.join(project, '.agents', 'skills', 'designer');
   assert.equal(fs.existsSync(path.join(dest, 'SKILL.md')), true);
   assert.equal(fs.lstatSync(dest).isSymbolicLink(), false);
   fs.rmSync(home, { recursive: true, force: true });
@@ -190,7 +190,7 @@ test('--project copies instead of symlinking', async () => {
 
 test('doctor reports broken grok links', async () => {
   const home = tmpHome();
-  const dest = path.join(home, '.grok', 'skills', 'visual-brainstorm');
+  const dest = path.join(home, '.grok', 'skills', 'visualization');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.symlinkSync(path.join(home, 'missing-target'), dest);
   const { log, lines } = collectLog();
@@ -203,12 +203,12 @@ test('doctor reports broken grok links', async () => {
 
 test('add --force repairs a broken symlink', async () => {
   const home = tmpHome();
-  const dest = path.join(home, '.grok', 'skills', 'visual-brainstorm');
+  const dest = path.join(home, '.grok', 'skills', 'visualization');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.symlinkSync('/Users/a1021500136/Desktop/oh-my-skills/visual-brainstorm', dest);
+  fs.symlinkSync('/Users/a1021500136/Desktop/oh-my-skills/visualization', dest);
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
-  const code = await run(['node', 'cli.js', 'add', 'visual-brainstorm', '--agent', 'grok'], ctx);
+  const code = await run(['node', 'cli.js', 'add', 'visualization', '--agent', 'grok'], ctx);
   assert.equal(code, 0);
   assert.equal(fs.existsSync(path.join(dest, 'SKILL.md')), true);
   fs.rmSync(home, { recursive: true, force: true });
@@ -223,16 +223,16 @@ test('CLI help and list exit 0', () => {
     env: { ...process.env, HOME: tmpHome() },
   });
   assert.equal(list.status, 0);
-  assert.match(list.stdout, /visual-brainstorm/);
-  assert.match(list.stdout, /figure-out/);
+  assert.match(list.stdout, /visualization/);
+  assert.match(list.stdout, /brainstorming/);
   assert.match(list.stdout, /code-chain/);
-  assert.match(list.stdout, /html-prototype/);
+  assert.match(list.stdout, /designer/);
 });
 
 test('renderBanner is a large pixel wordmark', () => {
   const banner = renderBanner({ columns: 80, version: '0.1.1' });
   assert.match(banner, /PIXEL SKILLS FOR EVERY AGENT/);
-  assert.match(banner, /my-designer/);
+  assert.match(banner, /designer/);
   assert.match(banner, /█/);
   assert.ok(banner.split('\n').length >= 16);
 });
@@ -269,6 +269,6 @@ test('add --all -y prints the pixel banner and skips the picker', () => {
   });
   assert.equal(result.status, 0);
   assert.match(result.stdout, /PIXEL SKILLS FOR EVERY AGENT/);
-  assert.match(result.stdout, /visual-brainstorm/);
+  assert.match(result.stdout, /visualization/);
   fs.rmSync(home, { recursive: true, force: true });
 });

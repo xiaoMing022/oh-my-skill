@@ -1,0 +1,76 @@
+{
+  "skill_name": "brainstorming",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我想给团队做个新 member onboarding 流程，顺便把文档站也改了。你先别问那么多，直接开干吧。",
+      "scripted_replies": [
+        "别问了，直接做，按你觉得对的来。"
+      ],
+      "expected_output": "States the significant how-it-gets-made choice in one plain line, ends the skill, and proceeds through the normal workflow. No design doc, no gate.",
+      "files": [],
+      "assertions": [
+        "Offers the one-line opt-out path instead of forcing the conversation.",
+        "On opt-out, states the significant production choice plainly and drops the approval gate.",
+        "Does not write a design doc or run a builder check for the opted-out task."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "把登录页的主按钮从蓝色改成品牌绿色，就这么个小改动。",
+      "scripted_replies": [
+        "用户群就是现有 web 端用户，成功就是颜色一致无回归。",
+        "描述没问题，按这个改吧。"
+      ],
+      "expected_output": "A short playback plus small-change sizing with the full in-chat description, an explicit approval, and no design doc.",
+      "files": [],
+      "assertions": [
+        "Plays back the understood part before asking about the next part.",
+        "Sizes the work as a small change with the full description in chat.",
+        "Does not build before the partner approves the in-chat description."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "我们要做一个新功能：给订单服务加支付回调对账。现在回调、本地订单状态、财务流水可能不一致，从意图开始聊，最后要一份设计文档。",
+      "scripted_replies": [
+        "背景是每周对账靠人工，成功是零人工介入且差异可解释；先网关后服务，语言沿用现有 Go。",
+        "非目标是实时大屏；反目标是自动调账。",
+        "文档可以，builder 意见里只有网关超时取值要我定：取 5s。"
+      ],
+      "expected_output": "A committed design doc covering intent, goals/non-goals/anti-goals, constraints, and decided how; a one-round builder check; no product code before doc approval; then plan mode.",
+      "files": [],
+      "assertions": [
+        "Writes the design doc with intent, why, goals/non-goals/anti-goals, constraints, and decided how.",
+        "Runs a single-round builder check and brings back only partner-answerable questions.",
+        "Does not write product code, scaffold, install deps, or invoke an implementation skill before doc approval.",
+        "After approval, goes to plan mode rather than implementing directly."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "不确定缓存要不要加，先随便写个能跑的验证下命中率，几小时的事。",
+      "scripted_replies": [
+        "行，先 spike 看看效果。"
+      ],
+      "expected_output": "A throwaway spike offer with minimal tests that feeds learnings back; keeping the output requires a new request through the gate.",
+      "files": [],
+      "assertions": [
+        "Labels the spike throwaway with no or minimal tests.",
+        "Brings spike learnings back into the conversation.",
+        "Treats keeping spike output as a new request through the approval gate."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "这是一个视觉布局问题：侧栏还是顶栏，先出两个稿给我看。顺便想想要不要做个季度业务复盘演讲。",
+      "expected_output": "Routes the layout comparison to visualization and keeps the talk itself in this skill. Does not absorb layout mockups here or reroute the non-software talk away.",
+      "files": [],
+      "assertions": [
+        "Does not treat a visual layout comparison as a brainstorming discovery chunk.",
+        "Routes look-at-able mockups to visualization instead of starting a preview server here.",
+        "Keeps the non-software talk in scope for intent discovery."
+      ]
+    }
+  ]
+}

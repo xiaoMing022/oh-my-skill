@@ -4,43 +4,68 @@
     {
       "id": 1,
       "prompt": "点击保存会发生什么？不要改代码。",
-      "expected_output": "A traced save path with one Mermaid diagram, numbered hops that cite real project code, and no product file edits.",
+      "expected_output": "A cited save trace proportional to the actual source: a few steps for a simple handler, or an overview diagram for a multi-module path. Names data and significant outcomes without padding or product file edits.",
       "files": [],
       "assertions": [
         "Locates a real save/submit entry in the open project instead of inventing a handler.",
-        "Shows one Mermaid diagram whose hop numbers match the written chain.",
-        "Each hop cites existing code and says what that step changes.",
+        "States the outcome in a short lead before the chain or any diagram.",
+        "Writes each hop as one line carrying stage, source, and data in → out, not as separate does/data/citation lines.",
+        "Uses a diagram when the structure benefits from it; if drawn, it comes after the chain and reuses the same numbered stage names.",
+        "Sizes the trace to actual meaningful phases without padding to 5-8 hops or dropping a critical async/failure edge to meet a quota.",
         "Does not edit product files or propose a redesign."
       ]
     },
     {
       "id": 2,
       "prompt": "用户提交订单后，前端到后端这条请求实际怎么走？把跨服务的边界画出来。",
-      "expected_output": "A chain that follows the request across modules or processes, with network/RPC/queue hops drawn as boundaries rather than local calls.",
+      "expected_output": "A chain that follows the request across modules or processes, with network/RPC/queue hops drawn as boundaries rather than local calls, and the payload named at the boundary.",
       "files": [],
       "assertions": [
-        "Traces from the client submit into the server handler using actual routes or clients in the repo.",
+        "Traces readable client and server handlers using actual routes/clients; stops explicitly at an unread boundary when server implementation is unavailable.",
         "Marks HTTP, queue, or RPC edges as process boundaries in the diagram.",
+        "Reuses the same numbered stage names in the chain and the boundary diagram.",
+        "Names what is sent across the boundary.",
         "Does not collapse a remote call into a local function arrow."
       ]
     },
     {
       "id": 3,
       "prompt": "这段校验逻辑会怎样？仓库里有两套 submit，一套在后台一套在公开表单。",
-      "expected_output": "Asks which entry to trace before producing a chain. Does not merge two handlers into one invented path.",
+      "expected_output": "Asks which entry to trace before producing a chain. Does not merge two unrelated handlers into one invented path.",
       "files": [],
       "assertions": [
-        "Asks one clarifying question when two entries would produce different chains.",
+        "Asks one clarifying question when two unrelated entries would produce different chains.",
         "Does not present a combined fictional call path as fact."
       ]
     },
     {
       "id": 4,
       "prompt": "登录失败之后我们应该怎么改鉴权，给我两个方案。",
-      "expected_output": "Routes the implementation-approach question to figure-out. Does not treat it as a code-chain walkthrough.",
+      "expected_output": "Hands off the implementation-approach question instead of absorbing it: UI parts go to designer with the traced path, unsettled intent to brainstorming. Does not treat it as a code-chain walkthrough.",
       "files": [],
       "assertions": [
         "Does not absorb a 'how should we change it' request into a code-chain explanation of current code as the whole answer."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "向我解释一下这个项目的安装指令是如何实现的。",
+      "expected_output": "Traces the shared installer spine (CLI add / cmdAdd / store / placePath) rather than asking which of npx vs install.sh to follow. Wrappers and --link/--project appear as branches, not as a merged fake handler. Hops name argv/flags/destination paths.",
+      "files": [],
+      "assertions": [
+        "Treats npx bin and install.sh as wrappers around one shared add/cmdAdd spine instead of asking the user to pick a shell.",
+        "Puts --link, --copy, and --project in Branches or edge labels rather than as extra numbered hops on the spine.",
+        "Names the data that moves (argv, flags, store path, agent destination) on one line per hop."
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "（接上一条已追过 cmdAdd 主链）那 --link 呢？",
+      "expected_output": "Checks whether prior source evidence is still current, then expands the --link branch with current citations. Rereads affected source when changed or freshness is unknown, without restarting unrelated parts of the installer walkthrough.",
+      "files": [],
+      "assertions": [
+        "Reuses the current cmdAdd spine, or refreshes only affected source/citations when files, configuration, branch, worktree, or line positions changed or freshness is unknown.",
+        "Explains the --link skip-store and direct package link with citations."
       ]
     }
   ]
