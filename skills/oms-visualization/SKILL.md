@@ -1,12 +1,12 @@
 ---
-name: visualization
+name: oms-visualization
 description: >
   Show instead of tell: render options, schemes, flows, timelines, charts, or
   maps as framed HTML on a local port, and resolve the decision in dialogue.
   Use for layout, navigation, density, visual tone, mockup comparison, 选布局,
   对比样式, 方案对比, 架构图, 流程图, 时间线, 图表, 选型对比, or
-  /visualization. Product implementation belongs to designer; intent
-  discovery to brainstorming.
+  /oms-visualization. Product implementation belongs to oms-designer; intent
+  discovery to oms-brainstorming.
 metadata:
   short-description: "Render framed visual options locally, confirm in dialogue"
 ---
@@ -42,11 +42,11 @@ working/export locations override defaults within the host's permissions.
 | Job | Route |
 | --- | --- |
 | Choose direction with visual options, schemes, or diagrams | Full session below |
-| Resolve one named fork, including a theme fork call from `designer` | Only that fork; return its decision to the caller |
+| Resolve one named fork, including a theme fork call from `oms-designer` | Only that fork; return its decision to the caller |
 | Explain data with a chart, map, or lab | Show the relevant visual; do not impose UI checkpoints or A/B options |
-| Implement UI in the open project | `designer`, if available |
-| Uncover what to build and why | `brainstorming`, if available |
-| What existing code does for a click, request, or function | `code-chain`, if available |
+| Implement UI in the open project | `oms-designer`, if available |
+| Uncover what to build and why | `oms-brainstorming`, if available |
+| What existing code does for a click, request, or function | `oms-code-chain`, if available |
 
 Honor the scope already authorized. If the user asks to proceed to a
 build, hand off with confirmed decisions and explicit assumptions; do
@@ -195,6 +195,6 @@ information; do not claim it was invoked.
 
 For compaction, preserve the session directory, current
 checkpoint/revision, pending question, confirmed/deferred decisions,
-and next action. Include: `Reload visualization; read session.md;
+and next action. Include: `Reload oms-visualization; read session.md;
 render-kit.md before any preview; charts.md / maps.md only when
 needed.`

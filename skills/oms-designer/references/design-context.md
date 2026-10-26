@@ -21,7 +21,7 @@ proof of a working design system. Do not search only for a file named global.css
 
 | Material | Home and lifecycle |
 | --- | --- |
-| Visual experiments and rejected variants | `visualization` session under `.oh-my-skills/visualization/`; preserve references, never import its renderer or styles into production. |
+| Visual experiments and rejected variants | `oms-visualization` session under `.oh-my-skills/visualization/`; preserve references, never import its renderer or styles into production. |
 | Decisions, rationale, pending questions | Existing project design docs when maintained there; otherwise external `design.md` below. It points to runtime sources rather than duplicating their entire contents. |
 | Styles and component code required to render the app | Inside the project or its declared shared package, using its existing conventions; versioned and available to ordinary builds and teammates. |
 

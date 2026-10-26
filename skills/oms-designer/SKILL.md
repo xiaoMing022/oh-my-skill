@@ -1,5 +1,5 @@
 ---
-name: designer
+name: oms-designer
 description: >
   Design and build interaction UI for Web and mobile/mini-program/desktop
   clients in one project design language with per-client adaptation. Use for
@@ -8,7 +8,7 @@ description: >
   or screens that look templated, generic, or 千篇一律.
   Reuse the project's native theme/token source via a short design contract;
   when no usable baseline exists, confirm a subject-specific theme once
-  through visualization.
+  through oms-visualization.
 metadata:
   short-description: "Interaction design for Web + clients from contract and native tokens"
 ---
@@ -50,7 +50,7 @@ Working records default to `.oh-my-skills/designer/contexts/` when needed;
 runtime components, tokens, and maintained design docs use the project's normal
 locations. Authorized source/doc changes outside the working root need no extra
 permission. If all project-file writes are forbidden, use an available host
-preview or permitted temporary location, including for visualization records.
+preview or permitted temporary location, including for oms-visualization records.
 
 ## Establish the baseline
 
@@ -79,9 +79,9 @@ records, source precedence, and where styles belong. Decide which case applies:
 | New project, starter-only styles, or no usable baseline | Ask about unresolved purpose/brand preferences, then use the theme confirmation below. |
 | Mixed styles in a bounded feature task | Use that app's intended shared system; fix local inconsistencies without migrating the whole project. Clarify only if choosing the authority materially changes the result. |
 | User requests a broad rebrand or cross-project style cleanup | Use the staged migration workflow in `references/migration.md`; preserve independent app boundaries. |
-| Request is an architecture or implementation-approach fork | Decide inline with a short plan; if intent itself is unsettled, send it to `brainstorming` first. |
-| Request is what existing code does for a click, request, or function | Use `code-chain` if available; do not turn an explanation into a restyle. |
-| Request is only visual exploration or a standalone preview | Use `visualization` in single-fork scope; do not turn it into product implementation. |
+| Request is an architecture or implementation-approach fork | Decide inline with a short plan; if intent itself is unsettled, send it to `oms-brainstorming` first. |
+| Request is what existing code does for a click, request, or function | Use `oms-code-chain` if available; do not turn an explanation into a restyle. |
+| Request is only visual exploration or a standalone preview | Use `oms-visualization` in single-fork scope; do not turn it into product implementation. |
 
 ## Confirm a missing theme once
 
@@ -90,7 +90,7 @@ records, source precedence, and where styles belong. Decide which case applies:
    concise question such as “有必须沿用的品牌风格，还是希望我给出几种方向？”
    Use a question tool if available, otherwise chat. Do not interrogate users
    about individual hex values, radii, or font weights.
-2. When enough context is known, call `visualization` for **one theme fork**:
+2. When enough context is known, call `oms-visualization` for **one theme fork**:
    2-3 directions that differ because of this subject, shown on the same
    representative content, layout, and viewports (for example desktop wide
    plus a 390px narrow frame, or phone plus mini-program frame for client

@@ -1,5 +1,5 @@
 {
-  "skill_name": "visualization",
+  "skill_name": "oms-visualization",
   "evals": [
     {
       "id": 1,
@@ -21,7 +21,7 @@
     },
     {
       "id": 2,
-      "prompt": "designer 调用方只需要确认侧栏导航 A / 顶栏导航 B 这一处分叉，其他视觉决定均已确认。用户回复：选 A，按这个继续实现。",
+      "prompt": "oms-designer 调用方只需要确认侧栏导航 A / 顶栏导航 B 这一处分叉，其他视觉决定均已确认。用户回复：选 A，按这个继续实现。",
       "expected_output": "A scoped handoff containing the selected navigation and available evidence, with no unnecessary extra visual checkpoints or repeated build-authorization question. Evaluation ends at the proposed handoff; do not build a product during the test.",
       "files": [],
       "assertions": [

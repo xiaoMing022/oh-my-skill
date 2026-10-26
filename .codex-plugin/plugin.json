@@ -21,6 +21,6 @@
   "interface": {
     "displayName": "oh-my-skills",
     "shortDescription": "Brainstorming, visualization, design, code tracing, and process docs",
-    "longDescription": "Install brainstorming, visualization, designer, code-chain, and process-docs for intent discovery, visual decisions, interaction design, code tracing, and source-grounded workflow documentation."
+    "longDescription": "Install oms-brainstorming, oms-visualization, oms-designer, oms-code-chain, and oms-process-docs for intent discovery, visual decisions, interaction design, code tracing, and source-grounded workflow documentation."
   }
 }

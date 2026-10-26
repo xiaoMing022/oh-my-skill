@@ -35,9 +35,9 @@ function collectLog() {
 }
 
 test('parseArgs maps -a to --agent, not --all', () => {
-  const parsed = parseArgs(['node', 'cli.js', 'add', 'visualization', '-a', 'grok,claude', '--all']);
+  const parsed = parseArgs(['node', 'cli.js', 'add', 'oms-visualization', '-a', 'grok,claude', '--all']);
   assert.equal(parsed.command, 'add');
-  assert.deepEqual(parsed.rest, ['visualization']);
+  assert.deepEqual(parsed.rest, ['oms-visualization']);
   assert.equal(parsed.flags.all, true);
   assert.deepEqual(parsed.flags.agents, ['grok', 'claude']);
 });
@@ -47,9 +47,9 @@ test('parseArgs rejects unknown flags', () => {
 });
 
 test('parseFrontmatter reads folded descriptions', () => {
-  const content = fs.readFileSync(path.join(PKG_ROOT, 'skills', 'visualization', 'SKILL.md'), 'utf8');
+  const content = fs.readFileSync(path.join(PKG_ROOT, 'skills', 'oms-visualization', 'SKILL.md'), 'utf8');
   const fm = parseFrontmatter(content);
-  assert.equal(fm.name, 'visualization');
+  assert.equal(fm.name, 'oms-visualization');
   assert.match(fm.description, /Show instead of tell/);
   assert.doesNotMatch(fm.description, /\n/);
 });
@@ -124,15 +124,15 @@ test('add installs into codex, opencode, hermes, workbuddy, and pi', async () =>
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
   const code = await run([
-    'node', 'cli.js', 'add', 'designer',
+    'node', 'cli.js', 'add', 'oms-designer',
     '--agent', 'codex,opencode,hermes,workbuddy,pi',
   ], ctx);
   assert.equal(code, 0);
-  assert.equal(fs.existsSync(path.join(home, '.codex', 'skills', 'designer', 'SKILL.md')), true);
-  assert.equal(fs.existsSync(path.join(home, '.config', 'opencode', 'skills', 'designer', 'SKILL.md')), true);
-  assert.equal(fs.existsSync(path.join(home, '.hermes', 'skills', 'designer', 'SKILL.md')), true);
-  assert.equal(fs.existsSync(path.join(home, '.workbuddy', 'skills', 'designer', 'SKILL.md')), true);
-  assert.equal(fs.existsSync(path.join(home, '.pi', 'agent', 'skills', 'designer', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.codex', 'skills', 'oms-designer', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.config', 'opencode', 'skills', 'oms-designer', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.hermes', 'skills', 'oms-designer', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.workbuddy', 'skills', 'oms-designer', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.pi', 'agent', 'skills', 'oms-designer', 'SKILL.md')), true);
   fs.rmSync(home, { recursive: true, force: true });
 });
 
@@ -141,12 +141,12 @@ test('add copies into store then symlinks agent dirs', async () => {
   fs.mkdirSync(path.join(home, '.grok'));
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
-  const code = await run(['node', 'cli.js', 'add', 'visualization', '--agent', 'grok,agents'], ctx);
+  const code = await run(['node', 'cli.js', 'add', 'oms-visualization', '--agent', 'grok,agents'], ctx);
   assert.equal(code, 0);
 
-  const stored = path.join(storeDir(home), 'skills', 'visualization', 'SKILL.md');
-  const grokLink = path.join(home, '.grok', 'skills', 'visualization');
-  const agentsLink = path.join(home, '.agents', 'skills', 'visualization');
+  const stored = path.join(storeDir(home), 'skills', 'oms-visualization', 'SKILL.md');
+  const grokLink = path.join(home, '.grok', 'skills', 'oms-visualization');
+  const agentsLink = path.join(home, '.agents', 'skills', 'oms-visualization');
   assert.equal(fs.existsSync(stored), true);
   assert.equal(fs.lstatSync(grokLink).isSymbolicLink(), true);
   assert.equal(fs.realpathSync(grokLink), fs.realpathSync(path.dirname(stored)));
@@ -154,7 +154,7 @@ test('add copies into store then symlinks agent dirs', async () => {
   assert.equal(isManagedPath(grokLink, ctx), true);
 
   const meta = JSON.parse(fs.readFileSync(path.join(storeDir(home), 'install.json'), 'utf8'));
-  assert.deepEqual(meta.installed, ['visualization']);
+  assert.deepEqual(meta.installed, ['oms-visualization']);
 
   fs.rmSync(home, { recursive: true, force: true });
 });
@@ -165,12 +165,12 @@ test('remove --agent keeps the store when other agents may still use it', async 
   fs.mkdirSync(path.join(home, '.cursor'));
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
-  await run(['node', 'cli.js', 'add', 'visualization', '--agent', 'grok,cursor'], ctx);
-  const code = await run(['node', 'cli.js', 'remove', 'visualization', '--agent', 'cursor'], ctx);
+  await run(['node', 'cli.js', 'add', 'oms-visualization', '--agent', 'grok,cursor'], ctx);
+  const code = await run(['node', 'cli.js', 'remove', 'oms-visualization', '--agent', 'cursor'], ctx);
   assert.equal(code, 0);
-  assert.equal(fs.existsSync(path.join(home, '.cursor', 'skills', 'visualization')), false);
-  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'visualization')), true);
-  assert.equal(fs.existsSync(path.join(storeDir(home), 'skills', 'visualization', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.cursor', 'skills', 'oms-visualization')), false);
+  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'oms-visualization')), true);
+  assert.equal(fs.existsSync(path.join(storeDir(home), 'skills', 'oms-visualization', 'SKILL.md')), true);
   fs.rmSync(home, { recursive: true, force: true });
 });
 
@@ -179,9 +179,9 @@ test('--project copies instead of symlinking', async () => {
   const project = fs.mkdtempSync(path.join(os.tmpdir(), 'oms-proj-'));
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: project, log });
-  const code = await run(['node', 'cli.js', 'add', 'designer', '--project', '--agent', 'agents'], ctx);
+  const code = await run(['node', 'cli.js', 'add', 'oms-designer', '--project', '--agent', 'agents'], ctx);
   assert.equal(code, 0);
-  const dest = path.join(project, '.agents', 'skills', 'designer');
+  const dest = path.join(project, '.agents', 'skills', 'oms-designer');
   assert.equal(fs.existsSync(path.join(dest, 'SKILL.md')), true);
   assert.equal(fs.lstatSync(dest).isSymbolicLink(), false);
   fs.rmSync(home, { recursive: true, force: true });
@@ -190,7 +190,7 @@ test('--project copies instead of symlinking', async () => {
 
 test('doctor reports broken grok links', async () => {
   const home = tmpHome();
-  const dest = path.join(home, '.grok', 'skills', 'visualization');
+  const dest = path.join(home, '.grok', 'skills', 'oms-visualization');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.symlinkSync(path.join(home, 'missing-target'), dest);
   const { log, lines } = collectLog();
@@ -203,14 +203,64 @@ test('doctor reports broken grok links', async () => {
 
 test('add --force repairs a broken symlink', async () => {
   const home = tmpHome();
-  const dest = path.join(home, '.grok', 'skills', 'visualization');
+  const dest = path.join(home, '.grok', 'skills', 'oms-visualization');
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.symlinkSync('/Users/a1021500136/Desktop/oh-my-skills/visualization', dest);
+  fs.symlinkSync(path.join(home, 'missing-visualization'), dest);
+  const { log } = collectLog();
+  const ctx = createContext({ home, cwd: home, log });
+  const code = await run(['node', 'cli.js', 'add', 'oms-visualization', '--agent', 'grok'], ctx);
+  assert.equal(code, 0);
+  assert.equal(fs.existsSync(path.join(dest, 'SKILL.md')), true);
+  fs.rmSync(home, { recursive: true, force: true });
+});
+
+test('short skill aliases resolve to oms- names', async () => {
+  const home = tmpHome();
+  fs.mkdirSync(path.join(home, '.grok'));
   const { log } = collectLog();
   const ctx = createContext({ home, cwd: home, log });
   const code = await run(['node', 'cli.js', 'add', 'visualization', '--agent', 'grok'], ctx);
   assert.equal(code, 0);
-  assert.equal(fs.existsSync(path.join(dest, 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'oms-visualization', 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'visualization')), false);
+  fs.rmSync(home, { recursive: true, force: true });
+});
+
+test('add migrates a managed legacy bare-name install', async () => {
+  const home = tmpHome();
+  const store = storeDir(home);
+  const legacyStore = path.join(store, 'skills', 'visualization');
+  fs.mkdirSync(legacyStore, { recursive: true });
+  fs.writeFileSync(path.join(legacyStore, 'SKILL.md'), '---\nname: visualization\n---\n');
+  fs.writeFileSync(path.join(store, 'install.json'), JSON.stringify({
+    package: '@lxy10086/oh-my-skills', version: '0.1.6', installed: ['visualization'],
+  }));
+  const legacyDest = path.join(home, '.grok', 'skills', 'visualization');
+  fs.mkdirSync(path.dirname(legacyDest), { recursive: true });
+  fs.symlinkSync(legacyStore, legacyDest);
+
+  const { log } = collectLog();
+  const ctx = createContext({ home, cwd: home, log });
+  const code = await run(['node', 'cli.js', 'add', 'oms-visualization', '--agent', 'grok'], ctx);
+  assert.equal(code, 0);
+  assert.equal(fs.existsSync(legacyDest), false);
+  assert.equal(fs.existsSync(legacyStore), false);
+  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'oms-visualization', 'SKILL.md')), true);
+  fs.rmSync(home, { recursive: true, force: true });
+});
+
+test('add leaves an unrelated bare-name skill alone', async () => {
+  const home = tmpHome();
+  const unrelated = path.join(home, '.grok', 'skills', 'designer');
+  fs.mkdirSync(unrelated, { recursive: true });
+  fs.writeFileSync(path.join(unrelated, 'SKILL.md'), '---\nname: designer\n---\n');
+
+  const { log } = collectLog();
+  const ctx = createContext({ home, cwd: home, log });
+  const code = await run(['node', 'cli.js', 'add', 'oms-designer', '--agent', 'grok'], ctx);
+  assert.equal(code, 0);
+  assert.equal(fs.existsSync(path.join(unrelated, 'SKILL.md')), true);
+  assert.equal(fs.existsSync(path.join(home, '.grok', 'skills', 'oms-designer', 'SKILL.md')), true);
   fs.rmSync(home, { recursive: true, force: true });
 });
 
@@ -223,16 +273,16 @@ test('CLI help and list exit 0', () => {
     env: { ...process.env, HOME: tmpHome() },
   });
   assert.equal(list.status, 0);
-  assert.match(list.stdout, /visualization/);
-  assert.match(list.stdout, /brainstorming/);
-  assert.match(list.stdout, /code-chain/);
-  assert.match(list.stdout, /designer/);
+  assert.match(list.stdout, /oms-visualization/);
+  assert.match(list.stdout, /oms-brainstorming/);
+  assert.match(list.stdout, /oms-code-chain/);
+  assert.match(list.stdout, /oms-designer/);
 });
 
 test('renderBanner is a large pixel wordmark', () => {
   const banner = renderBanner({ columns: 80, version: '0.1.1' });
   assert.match(banner, /PIXEL SKILLS FOR EVERY AGENT/);
-  assert.match(banner, /designer/);
+  assert.match(banner, /oms-designer/);
   assert.match(banner, /█/);
   assert.ok(banner.split('\n').length >= 16);
 });
@@ -269,6 +319,6 @@ test('add --all -y prints the pixel banner and skips the picker', () => {
   });
   assert.equal(result.status, 0);
   assert.match(result.stdout, /PIXEL SKILLS FOR EVERY AGENT/);
-  assert.match(result.stdout, /visualization/);
+  assert.match(result.stdout, /oms-visualization/);
   fs.rmSync(home, { recursive: true, force: true });
 });

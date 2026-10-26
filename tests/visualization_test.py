@@ -9,7 +9,7 @@ import time
 import unittest
 from urllib.request import urlopen
 
-SCRIPTS = Path(__file__).resolve().parents[1] / 'skills/visualization/scripts'
+SCRIPTS = Path(__file__).resolve().parents[1] / 'skills/oms-visualization/scripts'
 sys.path.insert(0, str(SCRIPTS))
 from session import _prune_candidates, initialize, list_sessions, mark, prune, publish
 

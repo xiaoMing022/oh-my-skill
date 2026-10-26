@@ -107,7 +107,7 @@ Use these evidence labels where uncertainty matters (not on every trivial line):
 
 An interpretation beyond those facts is an explicit unconfirmed assumption,
 never an invented handler or return value. Carry source evidence and limits to
-`process-docs` when the user asks for a maintained workflow reference.
+`oms-process-docs` when the user asks for a maintained workflow reference.
 
 ## Cite, do not dump
 

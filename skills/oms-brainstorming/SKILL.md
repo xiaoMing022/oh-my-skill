@@ -1,12 +1,12 @@
 ---
-name: brainstorming
+name: oms-brainstorming
 description: >
   Brainstorm before creative work: uncover real goals with one-question-at-a-time
   conversation, play back understanding, size quick/small/project, write a
   builder-ready design doc with approval gate. Use for new feature, new idea,
   新想法, 头脑风暴, 需求讨论, 做什么, 为什么, 演讲, 业务, 装修, or
-  /brainstorming. Layout mockups and clickable previews belong to
-  visualization; settled UI work belongs to designer.
+  /oms-brainstorming. Layout mockups and clickable previews belong to
+  oms-visualization; settled UI work belongs to oms-designer.
 metadata:
   short-description: "Uncover goals, play back, size, design doc with approval gate"
 ---
@@ -32,10 +32,10 @@ through the gate.
 | Job | Route |
 | --- | --- |
 | Vague idea, what/why, goals, success, design doc | Full session below |
-| Intent is settled, technical fork A/B/C | Decide inline in plan mode after the gate; attach a `code-chain` result first if it needs a code trace |
-| What existing code does for a click, request, or function | `code-chain` |
-| Visual direction, layout, tone, prototype preview | `visualization` |
-| Build UI in the open project, including style unification in scope | `designer` |
+| Intent is settled, technical fork A/B/C | Decide inline in plan mode after the gate; attach a `oms-code-chain` result first if it needs a code trace |
+| What existing code does for a click, request, or function | `oms-code-chain` |
+| Visual direction, layout, tone, prototype preview | `oms-visualization` |
+| Build UI in the open project, including style unification in scope | `oms-designer` |
 
 If the request is really a technical fork with clear intent (structure,
 data model, integration A vs B), settle it inline in plan mode with the
@@ -83,12 +83,12 @@ permitted host/temporary location; that restriction includes `.oh-my-skills/`.
    project. Building includes product code, scaffolding, installing deps,
    creating projects, and invoking an implementation skill. Reading and
    exploring are fine. After approval, software goes to plan mode with the
-   approved design; UI work hands off to `designer` with the design
-   attached, visual choices to `visualization`.
+   approved design; UI work hands off to `oms-designer` with the design
+   attached, visual choices to `oms-visualization`.
 
 Look-at-able content (a page, screen, schedule, printout) stays text here:
 describe it in words, then ask whether they want 2-3 versions via
-`visualization`. Do not start a preview server from this skill.
+`oms-visualization`. Do not start a preview server from this skill.
 
 ## Communication
 
@@ -124,5 +124,5 @@ information; do not claim it was invoked.
 
 For compaction, preserve the session directory, size, design doc path,
 gate state, pending question, and next action. Include: `Reload
-brainstorming; read session.md and conversation.md; builder-check.md
+oms-brainstorming; read session.md and conversation.md; builder-check.md
 before handoff. Do not build before the full description is approved.`

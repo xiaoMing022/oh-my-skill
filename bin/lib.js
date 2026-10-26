@@ -459,17 +459,41 @@ export function isSkillInstalled(target, skillName, ctx) {
   }
 }
 
+function canonicalSkillName(available, name) {
+  if (available.includes(name)) return name;
+  const prefixed = `oms-${name}`;
+  if (available.includes(prefixed)) return prefixed;
+  return null;
+}
+
 function resolveSkillNames(ctx, names, flags) {
   const available = listAvailableSkills(ctx).map((s) => s.name);
   if (flags.all || names.includes('all')) return available;
-  const wanted = names.filter((name) => {
-    if (!available.includes(name)) {
+  const wanted = [];
+  for (const name of names) {
+    const canonical = canonicalSkillName(available, name);
+    if (!canonical) {
       ctx.log(`  ${c.red}✖ Skill "${name}" does not exist.${c.reset}`);
-      return false;
+      continue;
     }
-    return true;
-  });
+    if (!wanted.includes(canonical)) wanted.push(canonical);
+  }
   return wanted;
+}
+
+function legacySkillName(name) {
+  return name.startsWith('oms-') ? name.slice('oms-'.length) : null;
+}
+
+function isOurLegacySkill(dest, legacyName, ctx) {
+  if (isManagedPath(dest, ctx)) return true;
+  const skillMdPath = path.join(dest, 'SKILL.md');
+  if (!exists(skillMdPath)) return false;
+  try {
+    return parseFrontmatter(fs.readFileSync(skillMdPath, 'utf8')).name === legacyName;
+  } catch {
+    return false;
+  }
 }
 
 export function cmdList(ctx, flags) {
@@ -575,6 +599,31 @@ export async function cmdAdd(ctx, names, flags) {
   const meta = readStoreMeta(ctx);
   const installed = new Set(meta.installed);
 
+  // Remove pre-namespace installs so the old bare name does not stay behind as a duplicate.
+  for (const skillName of toInstall) {
+    const legacy = legacySkillName(skillName);
+    if (!legacy) continue;
+    const wasInstalled = installed.has(legacy);
+    installed.delete(legacy);
+    for (const target of targets) {
+      if (target.type === 'plugin') continue;
+      const dest = path.join(target.path, legacy);
+      if (!lexists(dest)) continue;
+      const ours = isManagedPath(dest, ctx) || (wasInstalled && isOurLegacySkill(dest, legacy, ctx));
+      if (!ours) continue;
+      if (flags.dryRun) {
+        ctx.log(`  ${c.dim}• would remove legacy "${legacy}" from ${target.name}${c.reset}`);
+        continue;
+      }
+      fs.rmSync(dest, { recursive: true, force: true });
+      ctx.log(`  ${c.dim}Removed legacy "${legacy}" from ${target.name}${c.reset}`);
+    }
+    const legacyStore = path.join(ctx.store, 'skills', legacy);
+    if (lexists(legacyStore) && !flags.dryRun) {
+      fs.rmSync(legacyStore, { recursive: true, force: true });
+    }
+  }
+
   if (!flags.link) {
     for (const skillName of toInstall) {
       syncSkillToStore(ctx, skillName, flags);
@@ -615,7 +664,20 @@ export async function cmdAdd(ctx, names, flags) {
 
 export function cmdRemove(ctx, names, flags) {
   const available = listAvailableSkills(ctx).map((s) => s.name);
-  const toRemove = (flags.all || names.includes('all')) ? available : names;
+  let toRemove;
+  if (flags.all || names.includes('all')) {
+    toRemove = available;
+  } else {
+    toRemove = [];
+    for (const name of names) {
+      const canonical = canonicalSkillName(available, name);
+      if (!canonical) {
+        ctx.log(`  ${c.red}✖ Skill "${name}" does not exist.${c.reset}`);
+        continue;
+      }
+      if (!toRemove.includes(canonical)) toRemove.push(canonical);
+    }
+  }
   if (toRemove.length === 0) {
     ctx.log(`\n${c.yellow}No skills specified to remove.${c.reset}\n`);
     return 1;
@@ -671,8 +733,8 @@ export function cmdRemove(ctx, names, flags) {
 export function cmdUpdate(ctx, names, flags) {
   const meta = readStoreMeta(ctx);
   const available = listAvailableSkills(ctx).map((s) => s.name);
-  let toUpdate = names.length ? names.filter((n) => available.includes(n)) : meta.installed.filter((n) => available.includes(n));
-  if (flags.all) toUpdate = available;
+  const resolve = (list) => [...new Set(list.map((n) => canonicalSkillName(available, n)).filter(Boolean))];
+  let toUpdate = flags.all ? available : resolve(names.length ? names : meta.installed);
   if (toUpdate.length === 0) {
     ctx.log(`\n${c.yellow}Nothing to update. Install a skill first.${c.reset}\n`);
     return 1;
@@ -683,15 +745,17 @@ export function cmdUpdate(ctx, names, flags) {
 
 export function cmdInfo(ctx, skillName) {
   if (!skillName) {
-    ctx.log(`${c.red}Please specify a skill name. Example: oh-my-skills info visualization${c.reset}`);
+    ctx.log(`${c.red}Please specify a skill name. Example: oh-my-skills info oms-visualization${c.reset}`);
     return 1;
   }
-  const skillMdPath = path.join(ctx.skillsDir, skillName, 'SKILL.md');
+  const available = listAvailableSkills(ctx).map((s) => s.name);
+  const canonical = canonicalSkillName(available, skillName) || skillName;
+  const skillMdPath = path.join(ctx.skillsDir, canonical, 'SKILL.md');
   if (!exists(skillMdPath)) {
     ctx.log(`${c.red}Skill "${skillName}" not found.${c.reset}`);
     return 1;
   }
-  ctx.log(`\n${c.bold}${c.cyan}=== Skill: ${skillName} ===${c.reset}\n`);
+  ctx.log(`\n${c.bold}${c.cyan}=== Skill: ${canonical} ===${c.reset}\n`);
   ctx.log(fs.readFileSync(skillMdPath, 'utf8'));
   return 0;
 }
@@ -772,9 +836,10 @@ ${c.bold}EXAMPLES${c.reset}
   $ npx @lxy10086/oh-my-skills add
   $ npx @lxy10086/oh-my-skills add --all -y
   $ npx @lxy10086/oh-my-skills add --all --agent codex,opencode,hermes,workbuddy,pi
-  $ npx @lxy10086/oh-my-skills add visualization --agent grok,claude
-  $ npx @lxy10086/oh-my-skills add designer --project
-  $ npx @lxy10086/oh-my-skills remove visualization --agent cursor
+  $ npx @lxy10086/oh-my-skills add oms-visualization --agent grok,claude
+  $ npx @lxy10086/oh-my-skills add oms-designer --project
+  $ npx @lxy10086/oh-my-skills remove oms-visualization --agent cursor
+  Short aliases (visualization, designer) still resolve when unambiguous.
   $ npx @lxy10086/oh-my-skills update
 `);
 }

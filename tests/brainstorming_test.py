@@ -7,7 +7,7 @@ import sys
 import tempfile
 import unittest
 
-SCRIPTS = Path(__file__).resolve().parents[1] / 'skills/brainstorming/scripts'
+SCRIPTS = Path(__file__).resolve().parents[1] / 'skills/oms-brainstorming/scripts'
 sys.path.insert(0, str(SCRIPTS))
 from session import add_checkpoint, initialize, mark, set_status
 

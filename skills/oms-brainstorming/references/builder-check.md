@@ -59,7 +59,7 @@ that comes back through this gate.
 
 After a project's document is approved, the next step is the plan. A
 remaining technical fork is decided inline in plan mode with the approved
-design attached; UI work hands off to `designer` the same way.
+design attached; UI work hands off to `oms-designer` the same way.
 
 ## Red flags
 

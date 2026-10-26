@@ -11,11 +11,11 @@ outside `.oh-my-skills/`.
 
 | Skill | Working files | User-facing deliverables |
 | --- | --- | --- |
-| `brainstorming` | `brainstorming/sessions/<slug>-*/` for `session.md` and `checkpoints.json` | Default software design doc: `brainstorming/specs/YYYY-MM-DD-<topic>-design.md`; an explicit user/project documentation convention may override it. For non-software work, use the agreed location. |
-| `visualization` | `visualization/<slug>/` for session, checkpoints, revisions, index, and server metadata | Preview HTML and decision record remain in that session; requested exports go to the agreed output location. |
-| `designer` | `designer/contexts/<hash>/design.md` only when no maintained design-doc home exists; experiments belong to `visualization` | Runtime themes, components, and screens belong in the app's native source locations; maintained design contracts belong in existing project design docs. |
-| `code-chain` | None required for a normal explanation; optional scratch notes under `code-chain/<slug>/` | Cited explanation and optional Mermaid in chat by default; save a requested report in the agreed documentation location. Do not edit product code. |
-| `process-docs` | None required; optional scratch notes under `process-docs/<slug>/` | Workflow/prompt reference docs and necessary index links belong in the existing documentation tree; use a requested location or choose and state a suitable project docs location. Do not edit product code. |
+| `oms-brainstorming` | `brainstorming/sessions/<slug>-*/` for `session.md` and `checkpoints.json` | Default software design doc: `brainstorming/specs/YYYY-MM-DD-<topic>-design.md`; an explicit user/project documentation convention may override it. For non-software work, use the agreed location. |
+| `oms-visualization` | `visualization/<slug>/` for session, checkpoints, revisions, index, and server metadata | Preview HTML and decision record remain in that session; requested exports go to the agreed output location. |
+| `oms-designer` | `designer/contexts/<hash>/design.md` only when no maintained design-doc home exists; experiments belong to `oms-visualization` | Runtime themes, components, and screens belong in the app's native source locations; maintained design contracts belong in existing project design docs. |
+| `oms-code-chain` | None required for a normal explanation; optional scratch notes under `code-chain/<slug>/` | Cited explanation and optional Mermaid in chat by default; save a requested report in the agreed documentation location. Do not edit product code. |
+| `oms-process-docs` | None required; optional scratch notes under `process-docs/<slug>/` | Workflow/prompt reference docs and necessary index links belong in the existing documentation tree; use a requested location or choose and state a suitable project docs location. Do not edit product code. |
 
 Working paths in the table are relative to `.oh-my-skills/`. A read-only
 explanation or tiny change does not require a new directory, session, or record.

@@ -1,22 +1,22 @@
 # oh-my-skills
 
-Cross-agent skills for **brainstorming**, **visualization**, **designer**, **code-chain**, and **process-docs**.
+Cross-agent skills for **oms-brainstorming**, **oms-visualization**, **oms-designer**, **oms-code-chain**, and **oms-process-docs**. Installed skills keep the `oms-` prefix so they do not collide with same-named skills from other sources. Invoke them as `/oms-code-chain`, `/oms-designer`, and so on; the shorter names (`add code-chain`) work only as installer aliases.
 
 First-class install targets include **Codex**, **OpenCode**, **Hermes**, **WorkBuddy**, and **Pi**, plus Grok, Claude Code, Cursor, Gemini / Antigravity, Copilot, Roo, Windsurf, and any agent that reads Agent Skills (`SKILL.md`).
 
 | Skill                                         | What it does                                                                                      |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| [visualization](skills/visualization/) | Plan visual decisions, compare options, confirm across rounds, and retain resumable previews; also charts, maps, and labs |
-| [brainstorming](skills/brainstorming/) | Brainstorm before creative work: uncover goals with one-question-at-a-time conversation, play back, size, write a design doc with approval gate |
-| [code-chain](skills/code-chain/) | Trace what existing code does; cite meaningful phases and data, with Mermaid when useful or requested |
-| [process-docs](skills/process-docs/) | Turn source code into concise Chinese workflow and prompt references for APIs, triggers, outcomes, and failure paths |
-| [designer](skills/designer/) | Design and build interaction UI for Web and mobile/mini-program/desktop clients in one design language; contract + native tokens; a subject-specific theme fork when the baseline is missing, not a generic template |
+| [oms-visualization](skills/oms-visualization/) | Plan visual decisions, compare options, confirm across rounds, and retain resumable previews; also charts, maps, and labs |
+| [oms-brainstorming](skills/oms-brainstorming/) | Brainstorm before creative work: uncover goals with one-question-at-a-time conversation, play back, size, write a design doc with approval gate |
+| [oms-code-chain](skills/oms-code-chain/) | Trace what existing code does; cite meaningful phases and data, with Mermaid when useful or requested |
+| [oms-process-docs](skills/oms-process-docs/) | Turn source code into concise Chinese workflow and prompt references for APIs, triggers, outcomes, and failure paths |
+| [oms-designer](skills/oms-designer/) | Design and build interaction UI for Web and mobile/mini-program/desktop clients in one design language; contract + native tokens; a subject-specific theme fork when the baseline is missing, not a generic template |
 
 Requires **Node.js 18+** to install. Preview servers need **python3**.
 
-`designer` reuses each client's active theme and shared components under one
+`oms-designer` reuses each client's active theme and shared components under one
 design language with per-client adaptation (Web, mobile, mini-program,
-desktop). If no usable design baseline exists, it uses `visualization`
+desktop). If no usable design baseline exists, it uses `oms-visualization`
 for one theme choice before implementation. A new direction comes from the
 subject's audience and job, with task-appropriate hierarchy and expressive
 emphasis when useful. Decisions live in a short
@@ -24,19 +24,19 @@ design contract that points to runtime sources; production styles remain
 in each client's native theme source so builds do not depend on an
 agent's local cache. An external `design.md` working record is only used
 when the project has no design-doc home. Broad rebrands are handled by
-`designer` itself within the authorized scope.
+`oms-designer` itself within the authorized scope.
 
-`brainstorming` is for 头脑风暴: uncover what to build and why before
+`oms-brainstorming` is for 头脑风暴: uncover what to build and why before
 anything gets built, in software or out of it. When intent is settled,
 decide the remaining technical approach inline in plan mode and hand UI
-work to `designer` with the approved direction.
+work to `oms-designer` with the approved direction.
 
-`code-chain` traces a named behavior through the open project: real
+`oms-code-chain` traces a named behavior through the open project: real
 entry, cited steps sized to the question, and Mermaid when useful or requested. It explains
 what already happens; it does not choose a new design. UI changes traced
-this way hand off to `designer` with the traced path.
+this way hand off to `oms-designer` with the traced path.
 
-`process-docs` turns real code into concise Chinese workflow and prompt references, with API inputs and responses, trigger rules, visible copy, and failure behavior.
+`oms-process-docs` turns real code into concise Chinese workflow and prompt references, with API inputs and responses, trigger rules, visible copy, and failure behavior.
 
 
 ---
@@ -55,13 +55,16 @@ npx @lxy10086/oh-my-skills add
 npx @lxy10086/oh-my-skills add --all -y
 
 # One skill, selected agents
+npx @lxy10086/oh-my-skills add oms-visualization --agent grok,claude,cursor
+
+# Short aliases still work when unambiguous
 npx @lxy10086/oh-my-skills add visualization --agent grok,claude,cursor
 
 # Codex / OpenCode / Hermes / WorkBuddy / Pi
 npx @lxy10086/oh-my-skills add --all --agent codex,opencode,hermes,workbuddy,pi
 
 # Copy into the current project (committed with the repo)
-npx @lxy10086/oh-my-skills add designer --project
+npx @lxy10086/oh-my-skills add oms-designer --project
 ```
 
 In a real terminal, `add` without `--agent` prints a pixel banner, then a checkbox list. Detected agents are pre-checked. Space toggles, arrow keys move, `a` selects all, Enter confirms. Pass `-y` or `--agent` to skip the picker (CI / scripts).
@@ -71,7 +74,7 @@ In a real terminal, `add` without `--agent` prints a pixel banner, then a checkb
 The repo layout is `skills/<name>/SKILL.md`, so the ecosystem installer works too:
 
 ```bash
-npx skills add xiaoMing022/oh-my-skill --skill visualization -g
+npx skills add xiaoMing022/oh-my-skill --skill oms-visualization -g
 npx skills add xiaoMing022/oh-my-skill --all -g
 ```
 
@@ -97,7 +100,7 @@ npx @lxy10086/oh-my-skills add              # interactive picker
 npx @lxy10086/oh-my-skills add <name...> [--all] [--agent <ids>] [--project] [-y]
 npx @lxy10086/oh-my-skills remove <name...> [--all] [--agent <ids>]
 npx @lxy10086/oh-my-skills update
-npx @lxy10086/oh-my-skills info visualization
+npx @lxy10086/oh-my-skills info oms-visualization
 npx @lxy10086/oh-my-skills doctor
 ```
 
@@ -117,7 +120,7 @@ Global installs copy skills into `~/.local/share/oh-my-skills`, then symlink fro
 ### Uninstall
 
 ```bash
-npx @lxy10086/oh-my-skills remove visualization
+npx @lxy10086/oh-my-skills remove oms-visualization
 npx @lxy10086/oh-my-skills remove --all --agent cursor
 ```
 
@@ -186,11 +189,11 @@ oh-my-skills/
 ├── .grok-plugin/               # Grok marketplace
 ├── bin/cli.js                  # npx @lxy10086/oh-my-skills
 └── skills/
-    ├── visualization/
-    ├── brainstorming/
-    ├── code-chain/
-    ├── designer/
-    ├── process-docs/
+    ├── oms-visualization/
+    ├── oms-brainstorming/
+    ├── oms-code-chain/
+    ├── oms-designer/
+    ├── oms-process-docs/
     ├── outputs.md              # working files vs project deliverables
     └── handoff.md              # shared six-field handoff contract
 ```
@@ -211,8 +214,8 @@ evidence, and next action. Each skill embeds the compact format so an individual
 installation is self-contained. Reuse current evidence and existing sessions,
 recheck changed sources, and carry forward the user's authorization.
 
-`designer` chooses a workflow for local fixes, page additions, new baselines,
+`oms-designer` chooses a workflow for local fixes, page additions, new baselines,
 staged migrations, or additional clients; platform and migration guidance loads
-only when needed. `code-chain` sizes the explanation to the actual behavior,
+only when needed. `oms-code-chain` sizes the explanation to the actual behavior,
 uses diagrams when useful/requested, and distinguishes async/configuration paths
 from directly evidenced calls.

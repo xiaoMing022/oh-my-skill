@@ -1,5 +1,5 @@
 {
-  "skill_name": "brainstorming",
+  "skill_name": "oms-brainstorming",
   "evals": [
     {
       "id": 1,
@@ -64,11 +64,11 @@
     {
       "id": 5,
       "prompt": "这是一个视觉布局问题：侧栏还是顶栏，先出两个稿给我看。顺便想想要不要做个季度业务复盘演讲。",
-      "expected_output": "Routes the layout comparison to visualization and keeps the talk itself in this skill. Does not absorb layout mockups here or reroute the non-software talk away.",
+      "expected_output": "Routes the layout comparison to oms-visualization and keeps the talk itself in this skill. Does not absorb layout mockups here or reroute the non-software talk away.",
       "files": [],
       "assertions": [
-        "Does not treat a visual layout comparison as a brainstorming discovery chunk.",
-        "Routes look-at-able mockups to visualization instead of starting a preview server here.",
+        "Does not treat a visual layout comparison as an oms-brainstorming discovery chunk.",
+        "Routes look-at-able mockups to oms-visualization instead of starting a preview server here.",
         "Keeps the non-software talk in scope for intent discovery."
       ]
     }

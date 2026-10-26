@@ -7,7 +7,7 @@ import sys
 import tempfile
 import unittest
 
-SCRIPTS = Path(__file__).resolve().parents[1] / 'skills/designer/scripts'
+SCRIPTS = Path(__file__).resolve().parents[1] / 'skills/oms-designer/scripts'
 sys.path.insert(0, str(SCRIPTS))
 from design_context import locate
 

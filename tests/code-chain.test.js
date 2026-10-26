@@ -5,14 +5,14 @@ import path from 'node:path';
 import test from 'node:test';
 import { createContext, listAvailableSkills, run } from '../bin/lib.js';
 
-test('code-chain is discoverable and installs its runtime resources', async () => {
-  const home = fs.mkdtempSync(path.join(os.tmpdir(), 'code-chain-install-'));
+test('oms-code-chain is discoverable and installs its runtime resources', async () => {
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), 'oms-code-chain-install-'));
   try {
     const ctx = createContext({ home, cwd: home, log: () => {} });
-    assert.ok(listAvailableSkills(ctx).some((skill) => skill.name === 'code-chain'));
-    const result = await run(['node', 'cli.js', 'add', 'code-chain', '--agent', 'codex'], ctx);
+    assert.ok(listAvailableSkills(ctx).some((skill) => skill.name === 'oms-code-chain'));
+    const result = await run(['node', 'cli.js', 'add', 'oms-code-chain', '--agent', 'codex'], ctx);
     assert.equal(result, 0);
-    const installed = path.join(home, '.codex', 'skills', 'code-chain');
+    const installed = path.join(home, '.codex', 'skills', 'oms-code-chain');
     for (const file of [
       'SKILL.md',
       'references/trace.md',

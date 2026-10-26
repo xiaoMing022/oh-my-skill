@@ -1,7 +1,7 @@
 {
   "name": "@lxy10086/oh-my-skills",
   "version": "0.1.6",
-  "description": "Cross-agent skills (brainstorming, visualization, designer, code-chain, process-docs) with an installer CLI for Codex, OpenCode, Hermes, WorkBuddy, Pi, and more",
+  "description": "Cross-agent skills (oms-brainstorming, oms-visualization, oms-designer, oms-code-chain, oms-process-docs) with an installer CLI for Codex, OpenCode, Hermes, WorkBuddy, Pi, and more",
   "type": "module",
   "main": "bin/lib.js",
   "bin": {

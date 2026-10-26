@@ -7,21 +7,21 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { createContext, listAvailableSkills, run } from '../bin/lib.js';
 
-test('designer context isolation and preservation', () => {
+test('oms-designer context isolation and preservation', () => {
   const result = spawnSync('python3', ['-B', fileURLToPath(new URL('./designer_test.py', import.meta.url)), '-v'], {
     encoding: 'utf8', timeout: 30000,
   });
   assert.equal(result.status, 0, result.error?.message ?? result.stdout + result.stderr);
 });
 
-test('designer is discoverable and installs its runtime resources', async () => {
-  const home = fs.mkdtempSync(path.join(os.tmpdir(), 'designer-install-'));
+test('oms-designer is discoverable and installs its runtime resources', async () => {
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), 'oms-designer-install-'));
   try {
     const ctx = createContext({ home, cwd: home, log: () => {} });
-    assert.ok(listAvailableSkills(ctx).some((skill) => skill.name === 'designer'));
-    const result = await run(['node', 'cli.js', 'add', 'designer', '--agent', 'codex'], ctx);
+    assert.ok(listAvailableSkills(ctx).some((skill) => skill.name === 'oms-designer'));
+    const result = await run(['node', 'cli.js', 'add', 'oms-designer', '--agent', 'codex'], ctx);
     assert.equal(result, 0);
-    const installed = path.join(home, '.codex', 'skills', 'designer');
+    const installed = path.join(home, '.codex', 'skills', 'oms-designer');
     for (const file of ['SKILL.md', 'references/design-context.md', 'references/implementation.md', 'scripts/design_context.py']) {
       assert.ok(fs.existsSync(path.join(installed, file)), `missing installed resource: ${file}`);
     }

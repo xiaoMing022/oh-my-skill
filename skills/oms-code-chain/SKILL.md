@@ -1,14 +1,15 @@
 ---
-name: code-chain
+name: oms-code-chain
 description: >
   Trace what existing code actually does: locate the entry, follow the real
   call chain, cite key logic and data at each hop, and use Mermaid when the
   structure benefits from a diagram or the user asks for one. Use when the user
   asks what happens when, 会发生什么,
   调用链, 执行流程, 这段代码怎么走, 这条命令怎么实现, 安装是怎么做的,
-  request path, click handler, how this command works, or /code-chain. Do
-  not use for how we should implement a change (brainstorming or designer),
-  visual layout (visualization), or clickable previews (visualization).
+  request path, click handler, how this command works, or /oms-code-chain. Do
+  not use for how we should implement a change (oms-brainstorming or
+  oms-designer), visual layout (oms-visualization), or clickable previews
+  (oms-visualization).
 metadata:
   short-description: "Trace real behavior with current evidence and proportional detail"
 ---
@@ -25,10 +26,10 @@ edit product files, or turn the question into a redesign.
 | Job | Route |
 | --- | --- |
 | What existing code does for a click, request, event, command, or function | Full session below |
-| How we should implement or restructure it | UI change goes to `designer` with the traced path; unclear intent goes to `brainstorming`; settled non-UI work uses the normal planning workflow in proportion to scope |
-| Visual direction, layout, tone, prototype preview | `visualization` |
-| Build UI in the open project | `designer` |
-| Save workflow/API/user-feedback reference docs from code | `process-docs`, with the current traced evidence |
+| How we should implement or restructure it | UI change goes to `oms-designer` with the traced path; unclear intent goes to `oms-brainstorming`; settled non-UI work uses the normal planning workflow in proportion to scope |
+| Visual direction, layout, tone, prototype preview | `oms-visualization` |
+| Build UI in the open project | `oms-designer` |
+| Save workflow/API/user-feedback reference docs from code | `oms-process-docs`, with the current traced evidence |
 
 If the user asks both “what happens now” and “how should we change it”,
 finish the chain first, then hand off with the traced path as above.
@@ -148,5 +149,5 @@ information; do not claim it was invoked.
 For compaction, preserve: named behavior, confirmed entry or shared
 spine, hop list with data/citations, evidence limits and freshness, unexpanded
 branches, and the six-field handoff when needed.
-`Reload code-chain; read trace.md before following calls; mermaid.md
+`Reload oms-code-chain; read trace.md before following calls; mermaid.md
 before drawing. Continue from the traced spine; do not edit product files.`

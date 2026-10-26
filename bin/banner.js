@@ -62,7 +62,7 @@ export function renderBanner({ columns = process.stdout.columns || 80, version =
     ...paintWord('SKILLS', { color: c.green, scaleX }),
     '',
     `${c.bold}${c.yellow}  ░▒▓█ PIXEL SKILLS FOR EVERY AGENT █▓▒░${c.reset}`,
-    version ? `${c.dim}  v${version}   visualization · brainstorming · code-chain · designer${c.reset}` : '',
+    version ? `${c.dim}  v${version}   oms-visualization · oms-brainstorming · oms-code-chain · oms-designer${c.reset}` : '',
     '',
     bar(width, '▀', c.dim),
     '',

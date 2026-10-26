@@ -65,6 +65,6 @@ Pending: none.
 Evidence: SaveForm.tsx onSave -> api/settings.ts updateSettings; current working
   files inspected, including local edits; static read only. Existing error
   component: FormError.tsx. No runtime behavior check performed.
-Next action: designer — reuse the trace and theme, implement save/error feedback;
+Next action: oms-designer — reuse the trace and theme, implement save/error feedback;
   continue within the requested fix scope.
 ```
