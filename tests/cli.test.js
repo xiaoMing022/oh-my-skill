@@ -299,6 +299,16 @@ test('picker line helpers keep rows within terminal width', () => {
   assert.ok(visibleWidth(fitPlainWidth(`${'\x1b[32m'}◉${'\x1b[0m'}  ` + 'x'.repeat(120), 40)) <= 40);
 });
 
+test('picker line helpers count CJK characters as two columns', () => {
+  assert.equal(visibleWidth('业务流程'), 8);
+  assert.equal(visibleWidth('a，b'), 4);
+  const hint = '根据实际源码编写简洁的业务流程与用户提示文档，整理接口参数和响应、触发规则、状态反馈';
+  const cut = truncatePlain(hint, 21);
+  assert.ok(visibleWidth(cut) <= 21);
+  assert.ok(cut.endsWith('…'));
+  assert.ok(visibleWidth(fitPlainWidth(`  oms-process-docs  ${hint}`, 60)) <= 60);
+});
+
 test('buildAgentChoices pre-selects detected agents', () => {
   const home = tmpHome();
   fs.mkdirSync(path.join(home, '.grok'));

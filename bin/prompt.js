@@ -69,6 +69,8 @@ function promptRaw(ctx, { title, items, allKey }) {
       stdout.write('\x1b[?25h');
       if (stdin.isTTY) stdin.setRawMode(false);
       stdin.removeListener('data', onData);
+      if (typeof stdout.removeListener === 'function') stdout.removeListener('resize', onResize);
+      stdin.pause();
     };
 
     const finish = (ids) => {
@@ -82,12 +84,12 @@ function promptRaw(ctx, { title, items, allKey }) {
       reject(Object.assign(new Error('canceled'), { code: 'CANCELED' }));
     };
 
-    const columns = () => Math.max(40, Number(stdout.columns) || 80);
+    // One spare column: writing into the last column makes some terminals wrap early.
+    const columns = () => Math.max(40, (Number(stdout.columns) || 80) - 1);
 
     const drawList = () => {
       if (state.listLineCount > 0) {
-        // Move to the first list row, then clear everything below.
-        stdout.write(`\x1b[${state.listLineCount}A\x1b[J`);
+        stdout.write(`\r\x1b[${state.listLineCount}A\x1b[J`);
       }
 
       const width = columns();
@@ -107,7 +109,15 @@ function promptRaw(ctx, { title, items, allKey }) {
       listLines.push(fitPlainWidth(`  ${c.dim}${selected}/${state.items.length} selected${c.reset}`, width));
 
       state.listLineCount = listLines.length;
-      stdout.write(`${listLines.join('\n')}\n`);
+      stdout.write(`${listLines.map((line) => `\x1b[2K${line}`).join('\n')}\n`);
+    };
+
+    const onResize = () => {
+      // Old rows may have re-wrapped at the new width, so clear from the title down.
+      stdout.write('\x1b[2J\x1b[H');
+      writeHeader();
+      state.listLineCount = 0;
+      drawList();
     };
 
     let seq = '';
@@ -141,13 +151,18 @@ function promptRaw(ctx, { title, items, allKey }) {
       if (seq.length > 4) seq = '';
     };
 
+    const writeHeader = () => {
+      stdout.write(`\n${c.bold}${title}${c.reset}\n`);
+      stdout.write(`${c.dim}  space toggle · ↑/↓ move · ${allKey} all · enter confirm · q quit${c.reset}\n\n`);
+    };
+
     stdout.write('\x1b[?25l');
-    stdout.write(`\n${c.bold}${title}${c.reset}\n`);
-    stdout.write(`${c.dim}  space toggle · ↑/↓ move · ${allKey} all · enter confirm · q quit${c.reset}\n\n`);
+    writeHeader();
     stdin.setRawMode(true);
     stdin.resume();
     stdin.setEncoding('utf8');
     stdin.on('data', onData);
+    if (typeof stdout.on === 'function') stdout.on('resize', onResize);
     drawList();
   });
 }
@@ -166,16 +181,53 @@ export function strip(text) {
   return String(text).replace(/\x1b\[[0-9;]*m/g, '');
 }
 
+/** Terminal column width of one code point: 0 for combining marks, 2 for East Asian wide / emoji. */
+export function charWidth(cp) {
+  if (cp < 32 || (cp >= 0x7f && cp < 0xa0)) return 0;
+  if (
+    (cp >= 0x0300 && cp <= 0x036f) ||
+    (cp >= 0x200b && cp <= 0x200f) ||
+    (cp >= 0xfe00 && cp <= 0xfe0f)
+  ) return 0;
+  if (
+    (cp >= 0x1100 && cp <= 0x115f) ||
+    (cp >= 0x2e80 && cp <= 0x303e) ||
+    (cp >= 0x3041 && cp <= 0x33ff) ||
+    (cp >= 0x3400 && cp <= 0x4dbf) ||
+    (cp >= 0x4e00 && cp <= 0x9fff) ||
+    (cp >= 0xa000 && cp <= 0xa4cf) ||
+    (cp >= 0xac00 && cp <= 0xd7a3) ||
+    (cp >= 0xf900 && cp <= 0xfaff) ||
+    (cp >= 0xfe30 && cp <= 0xfe4f) ||
+    (cp >= 0xff00 && cp <= 0xff60) ||
+    (cp >= 0xffe0 && cp <= 0xffe6) ||
+    (cp >= 0x1f300 && cp <= 0x1f64f) ||
+    (cp >= 0x1f900 && cp <= 0x1f9ff) ||
+    (cp >= 0x20000 && cp <= 0x3fffd)
+  ) return 2;
+  return 1;
+}
+
 export function visibleWidth(text) {
-  return strip(text).length;
+  let width = 0;
+  for (const ch of strip(text)) width += charWidth(ch.codePointAt(0));
+  return width;
 }
 
 export function truncatePlain(text, max) {
   const value = String(text || '').replace(/\s+/g, ' ').trim();
   if (max <= 0) return '';
-  if (value.length <= max) return value;
+  if (visibleWidth(value) <= max) return value;
   if (max <= 1) return '…';
-  return `${value.slice(0, max - 1)}…`;
+  let out = '';
+  let width = 0;
+  for (const ch of value) {
+    const w = charWidth(ch.codePointAt(0));
+    if (width + w > max - 1) break;
+    out += ch;
+    width += w;
+  }
+  return `${out}…`;
 }
 
 /** Keep a single terminal row: truncate plain content if wider than columns. */
